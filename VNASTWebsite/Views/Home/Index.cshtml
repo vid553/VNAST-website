@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+@if (Model.Role == "Worker") { 
+<table align="center" class="table">
+  <thead>
+      <tr><th>YOUR ASSIGNMENTS</th></tr>
+        <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Deadline</th>
+<th>Status</th>
+        </tr>
+    </thead>
+      <tbody>
+    @foreach (var item in Model.Assignments)
+    {
+        <tr>
+            <th>@item.Name</th>
+            <th> @item.CreationDate.Date.ToString("dd/MM/yyyy")</th>
+<th> @item.Deadline.Date.ToString("dd/MM/yyyy")</th>
+            <th> @item.Status</th>
+        </tr>
+    }
+    </tbody>
+</table>
+    <table align="center" class="table">
+        <thead>
+    <tr><th>YOUR GROUPS</th></tr>
+   <tr>
+<th>Name</th>
+<th>No. of Workers</th>
+<th>Leader</th>
+
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Groups)
+            {
+                <tr>
+                    <th><a href="">@item.Name</a></th>
+                    <th> @item.Workers.Count</th>
+                    <th> @item.Leader.Username</th>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<!--else if (Model.Role == "Manager")
+{
+    <table align="center" class="table">
+        <thead>
+            <tr><th>USERS</th></tr>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>No. of Assignments</th>
+                <th>No. of Groups</th>
+            </tr>
+        </thead>
+        <tbody>
+   @*         @foreach (var item in Model)
+            {
+                <tr>
+                    <th>@item.Username</th>
+                    <th> @item.Role</th>
+                    <th> @item.Assignments.Count</th>
+                    <th> @item.Groups.Count</th>
+                </tr>
+            }*@
+        </tbody>
+    </table>-->
+  <!-- <table align="center" class="table">
+        <thead>
+            <tr><th>YOUR GROUPS</th></tr>
+            <tr>
+                <th>Name</th>
+                <th>No. of Workers</th>
+                <th>Leader</th>
+
+            </tr>
+        </thead>
+        <tbody>
+       @*     @foreach (var item in Model.Groups)
+            {
+                <tr>
+                    <th><a href="">@item.Name</a></th>
+                    <th> @item.Workers.Count</th>
+                    <th> @item.Leader.Username</th>
+
+                </tr>
+            }*@
+        </tbody>
+    </table>
+}-->
+<div class="jumbotron">
+    <h1>VNAST</h1>
+    <p class="lead">Very Nice App for Supervising Tasks</p>
+    <p><a href="" class="btn btn-primary btn-lg">Download</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+            enables a clean separation of concerns and gives you full control over markup
+            for enjoyable, agile development.
+        </p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>
