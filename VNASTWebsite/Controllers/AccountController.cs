@@ -20,6 +20,7 @@ namespace VNASTWebsite.Controllers
 
         public AccountController()
         {
+            string json_result = new APIController().LoginRequest();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
