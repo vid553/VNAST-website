@@ -51,11 +51,20 @@
             }
         </section>
     </div>
+    @*  Disabled not existing Social Login
+        <div class="col-md-4">
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    *@
+
     <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
+        <h1>VNAST</h1>
+        <p class="lead">Very Nice App for Supervising Tasks</p>
+        <p><a href="" class="btn btn-primary btn-lg">Download Android App</a></p>
     </div>
+
 </div>
 
 @section Scripts {
