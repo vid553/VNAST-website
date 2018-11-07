@@ -79,6 +79,13 @@ namespace VNASTWebsite.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [StringLength(10, ErrorMessage = "The {0} must be less than 10 characters long.")]
+        [Display(Name = "Display name")]
+        public string DisplayName { get; set; }
+
+        [Display(Name = "Account type")]
+        public string UserRole { get; set; }
     }
 
     public class ResetPasswordViewModel

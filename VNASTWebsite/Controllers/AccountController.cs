@@ -18,15 +18,21 @@ namespace VNASTWebsite.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
+        private APIController apiRequestController;
+
         public AccountController()
         {
-            string json_result = new APIController().LoginRequest();
+            apiRequestController = new APIController();
+            bool post_login = apiRequestController.LoginRequest("admin", "admin");
+            if (post_login)
+            {
+                string get_user = apiRequestController.RequestGet("me");
+            }
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;  
-            //AAA
             SignInManager = signInManager;
         }
 
@@ -153,7 +159,7 @@ namespace VNASTWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser {UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName, UserRole = model.UserRole };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

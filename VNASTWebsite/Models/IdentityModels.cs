@@ -16,6 +16,9 @@ namespace VNASTWebsite.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public string DisplayName { get; set; }
+        public string UserRole { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
