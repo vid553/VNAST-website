@@ -13,7 +13,164 @@
 {
     if (Model.privilege[0] == "worker")
     {
-        
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>PENDING ASSIGNMENTS</th></tr>
+                <tr>
+                    <th>Name</th>
+
+                    <th>Deadline</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Assignments)
+                {
+                    if (item.status[0] == "pending")
+                    {
+                        counter1++;
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.Created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                </details>
+                            </td>
+                            <td>Deadline: @item.time_limit</td>
+
+
+                        </tr>
+
+                    }
+                }
+                @if (counter1 == 0)
+                {
+                    <tr><td>No pending assignments</td><td></td></tr>
+                }
+
+            </tbody>
+        </table>
+
+    <table align="center" class="table table-striped table-hover">
+        <thead>
+            <tr><th>ONGOING TASKS</th></tr>
+            <tr>
+                <th>Name</th>
+
+                <th>Deadline</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Assignments)
+            {
+                if (item.status[0] == "ongoing")
+                {
+                    counter2++;
+                    <tr>
+                        <td>
+                            @item.name<details>
+                                <summary>Details</summary>
+                                <p>Creation date: @item.Created_date</p>
+                                <p>Description: @item.description</p>
+                                <p>Status: @item.status[0]</p>
+                            </details>
+                        </td>
+                        <td>Deadline: @item.time_limit</td>
+
+
+                    </tr>
+
+                }
+            }
+            @if (counter2 == 0)
+            {
+                <tr><td>No ongoing assignments</td><td></td></tr>
+            }
+
+        </tbody>
+    </table>
+    <table align="center" class="table table-striped table-hover">
+        <thead>
+            <tr><th>CANCELED TASKS</th></tr>
+            <tr>
+                <th>Name</th>
+
+                <th>Deadline</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Assignments)
+            {
+                if (item.status[0] == "canceled")
+                {
+                    counter3++;
+                    <tr>
+                        <td>
+                            @item.name<details>
+                                <summary>Details</summary>
+                                <p>Creation date: @item.Created_date</p>
+                                <p>Description: @item.description</p>
+                                <p>Status: @item.status[0]</p>
+                            </details>
+                        </td>
+                        <td>Deadline: @item.time_limit</td>
+
+
+                    </tr>
+
+                }
+            }
+            @if (counter3 == 0)
+            {
+                <tr><td>No canceled assignments</td><td></td></tr>
+            }
+
+        </tbody>
+    </table>
+    <table align="center" class="table table-striped table-hover">
+        <thead>
+            <tr><th>COMPLETED TASKS</th></tr>
+            <tr>
+                <th>Name</th>
+
+                <th>Deadline</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Assignments)
+            {
+                if (item.status[0] == "completed")
+                {
+                    counter4++;
+                    <tr>
+                        <td>
+                            @item.name<details>
+                                <summary>Details</summary>
+                                <p>Creation date: @item.Created_date</p>
+                                <p>Description: @item.description</p>
+                                <p>Status: @item.status[0]</p>
+                            </details>
+                        </td>
+                        <td>Deadline: @item.time_limit</td>
+
+
+                    </tr>
+
+                }
+            }
+            @if (counter4 == 0)
+            {
+                <tr><td>No pending assignments</td><td></td></tr>
+            }
+
+        </tbody>
+    </table>
+
     }
 
     else if (Model.privilege[0] == "admin")

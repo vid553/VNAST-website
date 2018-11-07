@@ -15,32 +15,36 @@ namespace VNASTWebsite.Controllers
        //     APIController api = AccountController.apiRequestController;
          //   string json = api.RequestGet("/me");
 
+            try
+            {
 
-            
-            string get_currentUser = AccountController.apiRequestController.RequestGet("me");
-            var currentUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_currentUser);
-           
-            
-            //if (post_login)
-            //{
-            //    string get_user = apiRequestController.RequestGet("me");
-            //}
-            int c = 0;
-            if (currentUser.privilege[0]== "admin")
-            {
-                string get_users = AccountController.apiRequestController.RequestGet("users");
-                var users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<User>>(get_users);
-                currentUser.workers = users;
+                string get_currentUser = AccountController.apiRequestController.RequestGet("me");
+                var currentUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_currentUser);
+
+
+                //if (post_login)
+                //{
+                //    string get_user = apiRequestController.RequestGet("me");
+                //}
+                int c = 0;
+                if (currentUser.privilege[0] == "admin")
+                {
+                    string get_users = AccountController.apiRequestController.RequestGet("users");
+                    var users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<User>>(get_users);
+                    currentUser.workers = users;
+                    return View(currentUser);
+                }
+                else if (currentUser.privilege[0] == "worker")
+                {
+                    string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
+                    var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                    currentUser.Assignments = userTasks;
+                    return View(currentUser);
+                }
                 return View(currentUser);
             }
-            else if (currentUser.privilege[0] == "worker")
-            {
-                string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
-                var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
-                currentUser.Assignments = userTasks;
-                return View(currentUser);
-            }
-            return View(currentUser);
+            catch { }
+            return View();
     /*        List<Assignment> list = new List<Assignment>();
             list.Add(new Assignment("NAME1", DateTime.Parse("24.10.2018"), DateTime.Parse("30.11.2018"), "ACTIVE"));
             list.Add(new Assignment("NAME2", DateTime.Parse("25.10.2018"), DateTime.Parse("31.12.2018"), "ACTIVE"));
