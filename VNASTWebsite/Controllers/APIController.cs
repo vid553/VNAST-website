@@ -87,6 +87,7 @@ namespace VNASTWebsite.Controllers
 
                 JObject response = JObject.Parse(jsonResponse);
                 userToken = (string)response["token"];
+
             }
             catch (Exception ex)
             {

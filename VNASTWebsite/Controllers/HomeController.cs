@@ -12,7 +12,36 @@ namespace VNASTWebsite.Controllers
     {
         public ActionResult Index()
         {
-            List<Assignment> list = new List<Assignment>();
+       //     APIController api = AccountController.apiRequestController;
+         //   string json = api.RequestGet("/me");
+
+
+            
+            string get_currentUser = AccountController.apiRequestController.RequestGet("me");
+            var currentUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_currentUser);
+           
+            
+            //if (post_login)
+            //{
+            //    string get_user = apiRequestController.RequestGet("me");
+            //}
+            int c = 0;
+            if (currentUser.privilege[0]== "admin")
+            {
+                string get_users = AccountController.apiRequestController.RequestGet("users");
+                var users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<User>>(get_users);
+                currentUser.workers = users;
+                return View(currentUser);
+            }
+            else if (currentUser.privilege[0] == "worker")
+            {
+                string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
+                var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                currentUser.Assignments = userTasks;
+                return View(currentUser);
+            }
+            return View(currentUser);
+    /*        List<Assignment> list = new List<Assignment>();
             list.Add(new Assignment("NAME1", DateTime.Parse("24.10.2018"), DateTime.Parse("30.11.2018"), "ACTIVE"));
             list.Add(new Assignment("NAME2", DateTime.Parse("25.10.2018"), DateTime.Parse("31.12.2018"), "ACTIVE"));
             list.Add(new Assignment("NAME3", DateTime.Parse("26.10.2018"), DateTime.Parse("15.12.2018"), "ACTIVE"));
@@ -22,16 +51,16 @@ namespace VNASTWebsite.Controllers
 
             User currentUser = new User();
             User leaderUser = new User();
-            leaderUser.Username = "John Doe";
+            leaderUser.username = "John Doe";
             Group skupina = new Group();
             skupina.Leader = leaderUser;
             skupina.Name = "GROUP1";
             skupina.Workers = new List<User>();
             skupina.Workers.Add(currentUser);
             currentUser.Assignments = list;
-            currentUser.Username = "WorkerUser1";
-            currentUser.Role = "Worker";
-            currentUser.Groups = new List<Group>();
+            currentUser.username = "WorkerUser1";
+            currentUser.privilege = "Worker";
+            //currentUser.Groups = new List<Group>();
             currentUser.Groups.Add(skupina);
             allUsers.Add(currentUser);
             allUsers.Add(leaderUser);
@@ -46,7 +75,7 @@ namespace VNASTWebsite.Controllers
             else
             {
                 return View(currentUser);
-            }
+            }*/
         }
 
         public ActionResult About()
