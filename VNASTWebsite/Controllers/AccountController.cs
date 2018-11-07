@@ -23,11 +23,11 @@ namespace VNASTWebsite.Controllers
         public AccountController()
         {
             apiRequestController = new APIController();
-            bool post_login = apiRequestController.LoginRequest("admin", "admin");
-            if (post_login)
-            {
-                string get_user = apiRequestController.RequestGet("me");
-            }
+            //bool post_login = apiRequestController.LoginRequest("admin", "admin");
+            //if (post_login)
+            //{
+            //    string get_user = apiRequestController.RequestGet("me");
+            //}
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -73,6 +73,41 @@ namespace VNASTWebsite.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
+        public ActionResult Login(LoginViewModel model, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            bool post_login = apiRequestController.LoginRequest(model.Username, model.Password);
+            if (post_login)
+            {
+                var ident = new ClaimsIdentity(
+                new[] { 
+                    // adding following 2 claim just for supporting default antiforgery provider
+                    new Claim(ClaimTypes.NameIdentifier, model.Username),
+                    new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
+
+                    new Claim(ClaimTypes.Name, model.Username),
+
+                     // optionally you could add roles if any
+                    new Claim(ClaimTypes.Role, "Admin"),
+                },
+                DefaultAuthenticationTypes.ApplicationCookie);
+
+                HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties { IsPersistent = false }, ident);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+                return View(model);
+            }
+        }
+
+        /*
+        [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -98,6 +133,7 @@ namespace VNASTWebsite.Controllers
                     return View(model);
             }
         }
+        */
 
         //
         // GET: /Account/VerifyCode
@@ -154,12 +190,46 @@ namespace VNASTWebsite.Controllers
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
+        public ActionResult Register(RegisterViewModel model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email, Privilege = model.Privilege };
+            }
+
+            bool post_register = apiRequestController.RegisterRequest(model.Username, model.Password);
+            if (post_register)
+            {
+                var ident = new ClaimsIdentity(
+                    new[] { 
+                        // adding following 2 claim just for supporting default antiforgery provider
+                        new Claim(ClaimTypes.NameIdentifier, model.Username),
+                        new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"),
+
+                        new Claim(ClaimTypes.Name, model.Username),
+
+                         // optionally you could add roles if any
+                        new Claim(ClaimTypes.Role, "Admin"),
+                    },
+                    DefaultAuthenticationTypes.ApplicationCookie);
+
+                HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties { IsPersistent = false }, ident);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        /*
+        [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName, UserRole = model.UserRole };
+                var user = new ApplicationUser {UserName = model.Username, Email = model.Email, Privilege = model.Privilege };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -179,6 +249,7 @@ namespace VNASTWebsite.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+        */
 
         //
         // GET: /Account/ConfirmEmail

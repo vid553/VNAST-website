@@ -18,7 +18,7 @@ namespace VNASTWebsite.Models
         }
 
         public string DisplayName { get; set; }
-        public string UserRole { get; set; }
+        public string Privilege { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

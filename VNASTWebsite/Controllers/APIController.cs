@@ -38,18 +38,55 @@ namespace VNASTWebsite.Controllers
             }
             
             string jsonResponse = "";
-            using (Stream s = webRequest.GetResponse().GetResponseStream())
-            {
-                using (StreamReader sr = new StreamReader(s))
-                {
-                    jsonResponse = sr.ReadToEnd();
-                }
-            }
-
-            JObject response = JObject.Parse(jsonResponse);
             try
             {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                JObject response = JObject.Parse(jsonResponse);
                 userToken = (string)response["token"]; 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool RegisterRequest(string username, string password, string privilege = "", string email = "") // TODO handle privilege and email
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "register");
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Accept = "application/json";
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\"}}", username, password);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                JObject response = JObject.Parse(jsonResponse);
+                userToken = (string)response["token"];
             }
             catch (Exception ex)
             {

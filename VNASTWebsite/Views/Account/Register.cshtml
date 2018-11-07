@@ -12,9 +12,9 @@
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Username, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
@@ -30,19 +30,19 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.DisplayName, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.UserRole, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Privilege, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.RadioButtonFor(m => m.UserRole, "admin", new { id = "admin" })
+            @Html.RadioButtonFor(m => m.Privilege, "admin", new { id = "admin" })
             @Html.Label("admin", "Admin")
-            @Html.RadioButtonFor(m => m.UserRole, "manager", new { id = "manager" })
+            @Html.RadioButtonFor(m => m.Privilege, "manager", new { id = "manager" })
             @Html.Label("manager", "Manager")
-            @Html.RadioButtonFor(m => m.UserRole, "worker", new { id = "worker", Checked = true })
+            @Html.RadioButtonFor(m => m.Privilege, "worker", new { id = "worker", Checked = true })
             @Html.Label("worker", "Worker")
         </div>
     </div>
