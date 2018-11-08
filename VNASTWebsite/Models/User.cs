@@ -25,6 +25,7 @@ namespace VNASTWebsite.Models
 
         public List<User> workers { get; set; }
         public List<Assignment> Assignments { get; set; }
+        public List<Assignment> tasks { get; set; }
         public List<Group> Groups { get; set; }
     }
   

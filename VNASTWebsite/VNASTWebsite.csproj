@@ -241,6 +241,7 @@
     <Content Include="Views\Assignment\Assignments.cshtml" />
     <Content Include="Views\Assignment\EditAssignment.cshtml" />
     <Content Include="Views\Assignment\AddAssignment.cshtml" />
+    <Content Include="Views\Home\Assign.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

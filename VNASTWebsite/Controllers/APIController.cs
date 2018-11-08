@@ -235,7 +235,14 @@ namespace VNASTWebsite.Controllers
                     }
                 }
                 Models.Assignment api_assignment = JsonConvert.DeserializeObject<Models.Assignment>(jsonResponse);
-                
+                if (assignment.assigned_to_worker == "")
+                {
+                    api_assignment.assigned_to_worker = "";
+                }
+                if (assignment.assigned_to_worker == null)
+                {
+                    api_assignment.assigned_to_worker = null;
+                }
             }
             catch (Exception ex)
             {

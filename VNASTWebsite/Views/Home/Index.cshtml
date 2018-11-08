@@ -2,7 +2,7 @@
     ViewBag.Title = "Home Page";
 
 
-    int counter1 = 0, counter2 = 0, counter3 = 0,counter4=0;
+    int counter1 = 0, counter2 = 0, counter3 = 0, counter4 = 0;
 }
 
 
@@ -15,7 +15,7 @@
     {
         <table align="center" class="table table-striped table-hover">
             <thead>
-                <tr><th>PENDING ASSIGNMENTS</th></tr>
+                <tr><th>PENDING TASKS</th></tr>
                 <tr>
                     <th>Name</th>
 
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Assignments)
+                @foreach (var item in Model.tasks)
                 {
                     if (item.status[0] == "pending")
                     {
@@ -33,12 +33,12 @@
                             <td>
                                 @item.name<details>
                                     <summary>Details</summary>
-                                    <p>Creation date: @item.Created_date</p>
+                                    <p>Creation date: @item.created_date</p>
                                     <p>Description: @item.description</p>
                                     <p>Status: @item.status[0]</p>
                                 </details>
                             </td>
-                            <td>Deadline: @item.time_limit</td>
+                            <td></td>
 
 
                         </tr>
@@ -53,166 +53,300 @@
             </tbody>
         </table>
 
-    <table align="center" class="table table-striped table-hover">
-        <thead>
-            <tr><th>ONGOING TASKS</th></tr>
-            <tr>
-                <th>Name</th>
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>ONGOING TASKS</th></tr>
+                <tr>
+                    <th>Name</th>
 
-                <th>Deadline</th>
+                    <th>Deadline</th>
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Assignments)
-            {
-                if (item.status[0] == "ongoing")
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.tasks)
                 {
-                    counter2++;
-                    <tr>
-                        <td>
-                            @item.name<details>
-                                <summary>Details</summary>
-                                <p>Creation date: @item.Created_date</p>
-                                <p>Description: @item.description</p>
-                                <p>Status: @item.status[0]</p>
-                            </details>
-                        </td>
-                        <td>Deadline: @item.time_limit</td>
+                    if (item.status[0] == "ongoing")
+                    {
+                        counter2++;
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                </details>
+                            </td>
+                            <td></td>
 
+
+                        </tr>
+
+                    }
+                }
+                @if (counter2 == 0)
+                {
+                    <tr><td>No ongoing assignments</td><td></td></tr>
+                }
+
+            </tbody>
+        </table>
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>CANCELED TASKS</th></tr>
+                <tr>
+                    <th>Name</th>
+
+                    <th>Deadline</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.tasks)
+                {
+                    if (item.status[0] == "canceled")
+                    {
+                        counter3++;
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                </details>
+                            </td>
+                            <td></td>
+
+
+                        </tr>
+
+                    }
+                }
+                @if (counter3 == 0)
+                {
+                    <tr><td>No canceled assignments</td><td></td></tr>
+                }
+
+            </tbody>
+        </table>
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>COMPLETED TASKS</th></tr>
+                <tr>
+                    <th>Name</th>
+
+                    <th>Deadline</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.tasks)
+                {
+                    if (item.status[0] == "completed")
+                    {
+                        counter4++;
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                </details>
+                            </td>
+                            <td></td>
+
+
+                        </tr>
+
+                    }
+                }
+                @if (counter4 == 0)
+                {
+                    <tr><td>No pending assignments</td><td></td></tr>
+                }
+
+            </tbody>
+        </table>
+
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>YOUR GROUPS</th></tr>
+                <tr>
+                    <th>Name</th>
+                    <th>No. of Workers</th>
+                    <th>Created</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Groups)
+                {
+                    <tr>
+                        <th><a href="">@item.name</a></th>
+                        <th> @item.workers.Count</th>
+                        <th> @item.created_date</th>
 
                     </tr>
-
                 }
-            }
-            @if (counter2 == 0)
-            {
-                <tr><td>No ongoing assignments</td><td></td></tr>
-            }
-
-        </tbody>
-    </table>
-    <table align="center" class="table table-striped table-hover">
-        <thead>
-            <tr><th>CANCELED TASKS</th></tr>
-            <tr>
-                <th>Name</th>
-
-                <th>Deadline</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Assignments)
-            {
-                if (item.status[0] == "canceled")
-                {
-                    counter3++;
-                    <tr>
-                        <td>
-                            @item.name<details>
-                                <summary>Details</summary>
-                                <p>Creation date: @item.Created_date</p>
-                                <p>Description: @item.description</p>
-                                <p>Status: @item.status[0]</p>
-                            </details>
-                        </td>
-                        <td>Deadline: @item.time_limit</td>
-
-
-                    </tr>
-
-                }
-            }
-            @if (counter3 == 0)
-            {
-                <tr><td>No canceled assignments</td><td></td></tr>
-            }
-
-        </tbody>
-    </table>
-    <table align="center" class="table table-striped table-hover">
-        <thead>
-            <tr><th>COMPLETED TASKS</th></tr>
-            <tr>
-                <th>Name</th>
-
-                <th>Deadline</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Assignments)
-            {
-                if (item.status[0] == "completed")
-                {
-                    counter4++;
-                    <tr>
-                        <td>
-                            @item.name<details>
-                                <summary>Details</summary>
-                                <p>Creation date: @item.Created_date</p>
-                                <p>Description: @item.description</p>
-                                <p>Status: @item.status[0]</p>
-                            </details>
-                        </td>
-                        <td>Deadline: @item.time_limit</td>
-
-
-                    </tr>
-
-                }
-            }
-            @if (counter4 == 0)
-            {
-                <tr><td>No pending assignments</td><td></td></tr>
-            }
-
-        </tbody>
-    </table>
-
+            </tbody>
+        </table>
     }
 
     else if (Model.privilege[0] == "admin")
     {
 
 
-    <table align="center" class="table  table-striped table-hover">
-        <thead>
-            <tr><th>USERS</th></tr>
-            <tr>
+        <table align="center" class="table  table-striped table-hover">
+            <thead>
+                <tr><th>USERS</th></tr>
+                <tr>
 
-                <th>Username</th>
-                <th>Role</th>
-                <th>Email</th>
-                <th>ID</th>
-               
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.workers)
-            {
-                
-            <tr>
-                <th>@item.username</th>
-                <th> @item.privilege[0]</th>
-                <th> @item.email</th>
-                <th> @item._id</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>ID</th>
 
-                <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
-                <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id})</th>
-            </tr>
-                
-            }
-        </tbody>
-    </table>
-    <button onclick="location.href = '/Account/Register'" type="button" class="btn btn-primary">
-        CREATE NEW USER
-    </button>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.workers)
+                {
 
+                    <tr>
+                        <th>@item.username</th>
+                        <th> @item.privilege[0]</th>
+                        <th> @item.email</th>
+                        <th> @item._id</th>
+
+                        <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
+                        <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id })</th>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        <button onclick="location.href = '/Account/Register'" type="button" class="btn btn-primary">
+            CREATE NEW USER
+        </button>
+
+    }
+    else if (Model.privilege[0] == "manager")
+    {
+        <h1>GROUPS YOU ARE MANAGER IN</h1>
+        foreach (var item in Model.Groups)
+        {
+            <table align="center" class="table  table-striped table-hover">
+                <thead>
+                    <tr><th>@item.name</th></tr>
+                    <tr>
+
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>ID</th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item1 in item.Workers)
+                    {
+                        if (item1 != null)
+                        {
+                            <tr>
+                                <th>@item1.username</th>
+                                <th> @item1.privilege[0]</th>
+                                <th> @item1.email</th>
+                                <th> @item1._id</th>
+                                <th><button type="button" class="btn btn-primary">REMOVE</button></th>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+
+        <table align="center" class="table table-striped table-hover">
+            <thead>
+                <tr><th>CREATED TASKS</th></tr>
+                <tr>
+                    <th>Name</th>
+
+                    <th>Deadline</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.tasks)
+                {
+                    if (item.assigned_to_worker != null && item.assigned_to_worker != "")
+                    {
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                              <div>@Html.ActionLink("Assign", "Assign", new { id = item._id })</div>
+                                </details>
+                            </td>
+                            <td>@Html.ActionLink("Assign", "Assign", new { id = item._id })</td>
+
+                            <td></td>
+                        </tr>
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                @item.name<details>
+                                    <summary>Details</summary>
+                                    <p>Creation date: @item.created_date</p>
+                                    <p>Description: @item.description</p>
+                                    <p>Status: @item.status[0]</p>
+                                    <div>@Html.ActionLink("Assign", "Assign", new { id = item._id })</div>
+
+
+
+
+
+                                </details>
+
+                            </td>
+                            <td>
+                                 @Html.ActionLink("Assign", "Assign", new { id = item._id })<!-- @* @item.Created_date.ToString("dd/MM/yyyy")*@-->
+                            </td>
+                            <td>
+                                UNASSIGNED
+                                <!--   <button type="button" class="btn btn-primary">ASSIGN</button>
+
+                                         <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                         <div id="myDropdown" class="dropdown-content">
+                                             <p>Home</p>
+                                             <p>About</p>
+                                             <p>Contact</p>
+                                         </div>
+
+                                -->
+                            </td>
+
+                        </tr>
+                    }
+                }
+
+
+            </tbody>
+        </table>
+
+    }
 }
-}
+
 <!--
 <div class="row">
     <div class="col-md-4">
