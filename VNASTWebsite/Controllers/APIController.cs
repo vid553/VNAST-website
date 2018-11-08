@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -87,14 +88,12 @@ namespace VNASTWebsite.Controllers
 
                 JObject response = JObject.Parse(jsonResponse);
                 userToken = (string)response["token"];
-
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
-
             return true;
         }
 
@@ -108,14 +107,95 @@ namespace VNASTWebsite.Controllers
             webRequest.Headers.Add("x-access-token", userToken);
 
             string jsonResponse = "";
-            using (Stream s = webRequest.GetResponse().GetResponseStream())
+            try
             {
-                using (StreamReader sr = new StreamReader(s))
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
                 {
-                    jsonResponse = sr.ReadToEnd();
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                return "";
+            }
             return jsonResponse;
+        }
+
+        // PUT to edit user, we check resulting user from server against parameter user
+        public bool EditUserRequest(Models.User user)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "users/" + user._id);
+            webRequest.Method = "PUT";
+            webRequest.Accept = "application/json";
+            webRequest.Headers.Add("x-access-token", userToken);
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                user._id = null;
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                serializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                string requestBody = JsonConvert.SerializeObject(user, serializerSettings);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                //JObject response = JObject.Parse(jsonResponse);
+                Models.User api_user = JsonConvert.DeserializeObject<Models.User>(jsonResponse);
+                if (api_user == user)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
+        // DELETE: generic delete method for API, parameter is page URI
+        public bool RequestDelete(string page)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + page);
+            webRequest.Method = "DELETE";
+            webRequest.Headers.Add("x-access-token", userToken);
+
+            try
+            {
+                string jsonResponse = "";
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
         }
     }
 }

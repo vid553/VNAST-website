@@ -194,14 +194,15 @@
             @foreach (var item in Model.workers)
             {
                 
-                    <tr>
-                        <th>@item.username</th>
-                        <th> @item.privilege[0]</th>
-                        <th> @item.email</th>
-                        <th> @item._id</th>
-                       
-                        <th><button type="button" class="btn btn-primary">Edit (TO DO)</button></th>
-                    </tr>
+            <tr>
+                <th>@item.username</th>
+                <th> @item.privilege[0]</th>
+                <th> @item.email</th>
+                <th> @item._id</th>
+
+                <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
+                <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id})</th>
+            </tr>
                 
             }
         </tbody>

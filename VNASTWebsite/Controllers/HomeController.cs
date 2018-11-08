@@ -4,12 +4,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using VNASTWebsite.Models;
+using Newtonsoft.Json;
 
 namespace VNASTWebsite.Controllers
 {
     [HandleError]
     public class HomeController : Controller
     {
+   
         public ActionResult Index()
         {
        //     APIController api = AccountController.apiRequestController;
@@ -19,7 +21,7 @@ namespace VNASTWebsite.Controllers
             {
 
                 string get_currentUser = AccountController.apiRequestController.RequestGet("me");
-                var currentUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_currentUser);
+                var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
 
 
                 //if (post_login)
@@ -30,14 +32,14 @@ namespace VNASTWebsite.Controllers
                 if (currentUser.privilege[0] == "admin")
                 {
                     string get_users = AccountController.apiRequestController.RequestGet("users");
-                    var users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<User>>(get_users);
+                    var users = JsonConvert.DeserializeObject<List<User>>(get_users);
                     currentUser.workers = users;
                     return View(currentUser);
                 }
                 else if (currentUser.privilege[0] == "worker")
                 {
                     string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
-                    var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                    var userTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     currentUser.Assignments = userTasks;
                     return View(currentUser);
                 }
@@ -94,6 +96,44 @@ namespace VNASTWebsite.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult EditUser(string id)
+        {
+            string get_currentUser = AccountController.apiRequestController.RequestGet("me");
+            var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            currentUser.workers = users;
+            var userToEdit = currentUser.workers.Where(s => s._id == id).FirstOrDefault();
+            return View(userToEdit);
+        }
+
+        [HttpPost]
+        public ActionResult EditUser(User user)
+        {
+            bool update_data = AccountController.apiRequestController.EditUserRequest(user);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+
+        public ActionResult DeleteUser(string id)
+        {
+            bool delete_user = AccountController.apiRequestController.RequestDelete("users/" + id);
+            if (delete_user)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
         }
     }
 }
