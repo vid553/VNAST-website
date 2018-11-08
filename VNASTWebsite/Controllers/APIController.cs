@@ -61,6 +61,7 @@ namespace VNASTWebsite.Controllers
             return true;
         }
 
+        // POST: Register new user
         public bool RegisterRequest(string username, string password, string privilege = "", string email = "") // TODO handle privilege and email
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
@@ -88,6 +89,44 @@ namespace VNASTWebsite.Controllers
 
                 JObject response = JObject.Parse(jsonResponse);
                 userToken = (string)response["token"];
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
+        }
+
+        public bool AddAssignmentRequest(Models.Assignment assignment)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+               .Create(serverUrl + "tasks");
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Accept = "application/json";
+            webRequest.Headers.Add("x-access-token", userToken);
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                serializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                string requestBody = JsonConvert.SerializeObject(assignment, serializerSettings);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                JObject response = JObject.Parse(jsonResponse);
             }
             catch (Exception ex)
             {
@@ -131,6 +170,7 @@ namespace VNASTWebsite.Controllers
                 .Create(serverUrl + "users/" + user._id);
             webRequest.Method = "PUT";
             webRequest.Accept = "application/json";
+            webRequest.ContentType = "application/json; charset=UTF-8";
             webRequest.Headers.Add("x-access-token", userToken);
             using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
             {
@@ -155,20 +195,54 @@ namespace VNASTWebsite.Controllers
 
                 //JObject response = JObject.Parse(jsonResponse);
                 Models.User api_user = JsonConvert.DeserializeObject<Models.User>(jsonResponse);
-                if (api_user == user)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
+            return true;
+        }
+
+        // PUT to edit assignment, we check resulting assignment from server against parameter
+        public bool EditAssignmentRequest(Models.Assignment assignment)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "tasks/" + assignment._id);
+            webRequest.Method = "PUT";
+            webRequest.Accept = "application/json";
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Headers.Add("x-access-token", userToken);
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                assignment._id = null;
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                serializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                string requestBody = JsonConvert.SerializeObject(assignment, serializerSettings);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+                Models.Assignment api_assignment = JsonConvert.DeserializeObject<Models.Assignment>(jsonResponse);
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
         }
 
         // DELETE: generic delete method for API, parameter is page URI

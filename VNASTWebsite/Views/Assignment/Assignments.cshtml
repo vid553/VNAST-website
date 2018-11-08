@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Assignments";
+}
+
+<h2>All Tasks</h2>
+
+@if (Model != null)
+{
+
+    <table align="center" class="table  table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created date</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <th>@item.priority</th>
+                    <th>@item.status[0]</th>
+                    <th>@item.created_date</th>
+                    <th>@item._id</th>
+                    <th>@item.name</th>
+                    <th>@item.description</th>
+
+                    <th>@Html.ActionLink("Edit", "EditAssignment", new { id = item._id })</th>
+                    <th>@Html.ActionLink("Delete", "DeleteAssignment", new { id = item._id })</th>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+<button onclick="location.href = 'AddAssignment'" type="button" class="btn btn-primary"> Create new Task </button>
+
