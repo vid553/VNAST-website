@@ -139,13 +139,20 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult EditUser(string id)
         {
-            string get_currentUser = AccountController.apiRequestController.RequestGet("me");
-            var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
-            string get_users = AccountController.apiRequestController.RequestGet("users");
-            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
-            currentUser.workers = users;
-            var userToEdit = currentUser.workers.Where(s => s._id == id).FirstOrDefault();
-            return View(userToEdit);
+            try
+            {
+                string get_currentUser = AccountController.apiRequestController.RequestGet("me");
+                var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
+                string get_users = AccountController.apiRequestController.RequestGet("users");
+                var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+                currentUser.workers = users;
+                var userToEdit = currentUser.workers.Where(s => s._id == id).FirstOrDefault();
+                return View(userToEdit);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
