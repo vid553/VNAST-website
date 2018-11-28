@@ -250,5 +250,49 @@ namespace VNASTWebsite.Controllers
                 return View("Error");
             }
         }
+        public ActionResult Accept(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            assignmentToEdit.status[0] = "completed";
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignmentToEdit);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+           
+        }
+        public ActionResult Decline(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            assignmentToEdit.status[0] = "ongoing";
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignmentToEdit);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+           
+        }
+
+       
     }
 }

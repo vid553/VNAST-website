@@ -276,8 +276,9 @@
                 <tr>
                     <th>Name</th>
                     <th>Assigned to</th>
-                    <th>ASSIGN</th>
+                    
                     <th>STATUS</th>
+                    <th>ASSIGN</th>
                     <th>EVALUATE</th>
                 </tr>
             </thead>
@@ -299,10 +300,23 @@
                             <td>
                                 @item.assigned_to_workerName
                             </td>
-                            <td>@Html.ActionLink("Assign", "Assign", new { id = item._id })</td>
+                            
 
                             <td>@item.status[0]</td>
-                            <td>@Html.ActionLink("Evaluate", "Evaluate", new { id = item._id })</td>
+                            <td>
+                            @if(item.status[0]=="pending"){
+                                @Html.ActionLink("DECLINE", "Decline", new { id = item._id })
+                            }
+                            else
+                            {
+                            @Html.ActionLink("Assign", "Assign", new { id = item._id })
+                            }</td>
+                            <td>
+@if(item.status[0]=="pending"){
+    @Html.ActionLink("ACCEPT", "Accept", new { id = item._id })}
+else
+{
+@Html.ActionLink("Change status", "Evaluate", new { id = item._id })}</td>
                         </tr>
 
                     }
