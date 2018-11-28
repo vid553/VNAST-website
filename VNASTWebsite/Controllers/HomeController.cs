@@ -225,5 +225,30 @@ namespace VNASTWebsite.Controllers
             ViewBag.Message = "Chat";
             return View();
         }
+        public ActionResult Evaluate(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            return View(assignmentToEdit);
+        }
+
+        [HttpPost]
+        public ActionResult Evaluate(Models.Assignment assignment)
+        {
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignment);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
     }
 }
