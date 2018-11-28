@@ -1,0 +1,36 @@
+MyArduinoLang := Include Define INIT LOOP
+
+Include := 'Include(' (library','?)+ ')'
+library := ('a' ... 'z' | 'A' ... 'Z' | '_' | '0' ... '9')+ '.h'
+
+DHT := 'DHT(' name ',' pin ')'
+name := ('a' ... 'z' | 'A' ... 'Z' | '_' | '0' ... '9')+
+pin := integer+
+integer := '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+INIT := 'INIT ' serial? dhtBegin
+serial := 'Serial(' speed ')'
+speed := integer+ 
+dhtBegin := 'DHTbegin'
+
+LOOP := 'LOOP ' Read+ Show* Wait* Blink* Light*
+Read :='Read(' (humidity ','?)? temperature? ')'
+humidity := integer+ ('.' integer+)?
+temperature := integer+ ('.' integer+)?
+
+
+Show := 'Show(' (humidity ','?)? temperature? ')'
+
+Wait := 'Wait(' delay ')'
+delay := integer+
+
+Blink := 'Blink(' (condition ',')? delay? ')'
+condition := physicalQuantity operator value
+physicalQuantity := humidity | temperature
+operator := '<' | '<=' | '=' | '=>' | '>'
+value= integer+ ('.' integer+)?
+
+Light := 'Led(' ledValue (',' condition)? (',' delay)? ')'
+ledValue := 'low' | 'high'
+
+comment := '$' ('a' ... 'z' | 'A' ... 'Z' | '_' | '0' ... '9')* '$'

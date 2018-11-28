@@ -48,30 +48,39 @@ namespace VNASTWebsite.Controllers
                 else if (currentUser.privilege[0] == "manager")
                 {
                     //   string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
-                    //   var userTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                    //   var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     string get_userGroupManagerOf = AccountController.apiRequestController.RequestGet("groups/get/managerof");
-                    var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
+                    var userGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
                     //   currentUser.Assignments = userTasks;
                     currentUser.Groups = userGroups;
 
                     string get_ManagerTasks = AccountController.apiRequestController.RequestGet("tasks/get/managedtasks");
-                    var ManagerTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+                    var ManagerTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
                     currentUser.tasks = ManagerTasks;
 
                     List<User> managerWorkers = new List<User>();
+                    foreach (var item in currentUser.tasks)
+                    {
+                        string get_User = AccountController.apiRequestController.RequestGet("users/" + item.assigned_to_worker);
+                        var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+
+                        item.assigned_to_workerName = user.username;
+                    }
                     foreach (var item in userGroups)
                     {
                         item.Workers = new List<User>();
                         foreach (var item1 in item.workers)
                         {
                             string get_User = AccountController.apiRequestController.RequestGet("users/" + item1);
-                            var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
                             if (user != null)
                             {
                                 item.Workers.Add(user);
                                 if (!managerWorkers.Any(x => x._id == user._id))
                                 {
+                                    
                                     managerWorkers.Add(user);
+
                                 }
                             }
                         }
@@ -185,6 +194,9 @@ namespace VNASTWebsite.Controllers
             string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
             var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
             var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
             return View(assignmentToEdit);
         }
 

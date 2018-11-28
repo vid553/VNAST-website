@@ -41,9 +41,10 @@ namespace VNASTWebsite.Models
 //public DateTime Created_date { get; set; }
         public int __v { get; set; }
         public string assigned_to_worker { get; set; }
+        public string assigned_to_workerName { get; set; }
         public string created_by { get; set; }
         public string assigned_to_group { get; set; }
         public DateTime? time_limit { get; set; }
-
+        public List<User> potentialWorkers { get; set; }        
     }
 }

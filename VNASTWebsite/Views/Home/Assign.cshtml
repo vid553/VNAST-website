@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Assign";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <h2>Assign</h2>
@@ -12,58 +13,61 @@
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
+        @*@Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m.priority, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.priority, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.priority)
+            @*     @Html.ValidationMessageFor(m => m.priority, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })
+        @*  @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m.status, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.status[0])
+            @*   @Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })
+        @*     @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m.created_date, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.created_date, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.created_date)
+            @*    @Html.ValidationMessageFor(m => m.created_date, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })
+        @*   @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m._id, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m._id, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m._id)
+            @*      @Html.ValidationMessageFor(m => m._id, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })
+        @*   @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m.name, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.name)
+            @*       @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.created_by, new { @class = "col-md-2 control-label" })
+        @*   @Html.LabelFor(m => m.created_by, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.EditorFor(m => m.created_by, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.created_by, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.created_by)
+            @*    @Html.ValidationMessageFor(m => m.created_by, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })
+        @*   @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })*@
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.description, new { @class = "form-control" })
+            @Html.HiddenFor(m => m.description)
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.assigned_to_worker, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.assigned_to_worker, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.assigned_to_worker, "", new { @class = "text-danger" })
+            @*        @Html.DropDownListFor(m => m.assigned_to_worker,new SelectList(m.potentialWorkers, "AssignWorker", "Name")*@
+            @Html.DropDownListFor(item => item.assigned_to_worker, new SelectList(Model.potentialWorkers, "_id", "username"), "--Select--")
+
+            @*     @Html.HiddenFor(m => m.assigned_to_worker, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.assigned_to_worker, "", new { @class = "text-danger" }) *@
         </div>
     </div>
 
