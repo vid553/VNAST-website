@@ -14,8 +14,9 @@ namespace VNASTWebsite.Controllers
 {
     public class APIController : Controller
     {
-        private string serverUrl = "http://23.97.243.166:3000/";
+        private string serverUrl = "http://65.52.129.150:3000/";
         private string userToken;
+        private bool authenticated;
 
         // GET: API
         public ActionResult Index()
@@ -26,21 +27,21 @@ namespace VNASTWebsite.Controllers
         // POST: login request to API server
         public bool LoginRequest(string username, string password)
         {
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
-                .Create(serverUrl + "login");
-            webRequest.Method = "POST";
-            webRequest.ContentType = "application/json; charset=UTF-8";
-            webRequest.Accept = "application/json";
-            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
-            {
-                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\"}}", username, password);
-                streamWriter.Write(requestBody);
-                streamWriter.Close();
-            }
-            
-            string jsonResponse = "";
             try
             {
+                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(serverUrl + "login");
+                webRequest.Method = "POST";
+                webRequest.ContentType = "application/json; charset=UTF-8";
+                webRequest.Accept = "application/json";
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\"}}", username, password);
+                    streamWriter.Write(requestBody);
+                    streamWriter.Close();
+                }
+            
+                string jsonResponse = "";
+
                 using (Stream s = webRequest.GetResponse().GetResponseStream())
                 {
                     using (StreamReader sr = new StreamReader(s))
@@ -50,15 +51,22 @@ namespace VNASTWebsite.Controllers
                 }
 
                 JObject response = JObject.Parse(jsonResponse);
-                userToken = (string)response["token"]; 
+                userToken = (string)response["token"];
+                authenticated = Convert.ToBoolean(response["auth"]);
+                if (authenticated)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
-
-            return true;
         }
 
         // POST: Register new user
@@ -95,9 +103,11 @@ namespace VNASTWebsite.Controllers
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
+            authenticated = true;
             return true;
         }
 
+        // POST add assignment
         public bool AddAssignmentRequest(Models.Assignment assignment)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
@@ -136,7 +146,7 @@ namespace VNASTWebsite.Controllers
             return true;
         }
 
-        // GET: generic get method for API, parameter is page URI 
+        // GET: generic get method for API, parameter is page URI, has header userToken 
         public string RequestGet(string page)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
@@ -161,6 +171,42 @@ namespace VNASTWebsite.Controllers
                 return "";
             }
             return jsonResponse;
+        }
+
+        // GET: logout current user on API side
+        public bool Logout()
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "logout");
+            webRequest.Method = "GET";
+            webRequest.Accept = "application/json";
+            string jsonResponse = "";
+            
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+                JObject response = JObject.Parse(jsonResponse);
+                authenticated = Convert.ToBoolean(response["auth"]);
+                if (!authenticated) // if successfully loged out
+                {
+                    userToken = null;
+                    return true;
+                }
+                else    // if logout failed
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         // PUT to edit user, we check resulting user from server against parameter user

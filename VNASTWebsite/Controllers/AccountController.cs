@@ -60,6 +60,11 @@ namespace VNASTWebsite.Controllers
             }
         }
 
+        public ActionResult Redirect()
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -104,7 +109,6 @@ namespace VNASTWebsite.Controllers
                 return View(model);
             }
         }
-
         /*
         [HttpPost]
         [AllowAnonymous]
@@ -133,7 +137,6 @@ namespace VNASTWebsite.Controllers
                     return View(model);
             }
         }
-        */
 
         //
         // GET: /Account/VerifyCode
@@ -177,6 +180,7 @@ namespace VNASTWebsite.Controllers
                     return View(model);
             }
         }
+        */
 
         //
         // GET: /Account/Register
@@ -249,7 +253,6 @@ namespace VNASTWebsite.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-        */
 
         //
         // GET: /Account/ConfirmEmail
@@ -463,6 +466,7 @@ namespace VNASTWebsite.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
+        */
 
         //
         // POST: /Account/LogOff
@@ -470,10 +474,20 @@ namespace VNASTWebsite.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            bool api_logout = apiRequestController.Logout();
+            if (api_logout)
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                Session.Abandon();
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
+        /*
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
@@ -481,6 +495,7 @@ namespace VNASTWebsite.Controllers
         {
             return View();
         }
+        */
 
         protected override void Dispose(bool disposing)
         {

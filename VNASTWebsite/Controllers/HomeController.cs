@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 
 namespace VNASTWebsite.Controllers
 {
+    [Authorize]
     [HandleError]
     public class HomeController : Controller
     {
@@ -20,8 +21,7 @@ namespace VNASTWebsite.Controllers
             try
             {
                 string get_currentUser = AccountController.apiRequestController.RequestGet("me");
-                var currentUser = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_currentUser);
-
+                var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
 
                 //if (post_login)
                 //{
@@ -31,16 +31,16 @@ namespace VNASTWebsite.Controllers
                 if (currentUser.privilege[0] == "admin")
                 {
                     string get_users = AccountController.apiRequestController.RequestGet("users");
-                    var users = Newtonsoft.Json.JsonConvert.DeserializeObject<List<User>>(get_users);
+                    var users = JsonConvert.DeserializeObject<List<User>>(get_users);
                     currentUser.workers = users;
                     return View(currentUser);
                 }
                 else if (currentUser.privilege[0] == "worker")
                 {
                     string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
-                    var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                    var userTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     string get_userGroup = AccountController.apiRequestController.RequestGet("groups/get/memberin");
-                    var userGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Group>>(get_userGroup);
+                    var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroup);
                     currentUser.tasks = userTasks;
                     currentUser.Groups = userGroups;
                     return View(currentUser);
@@ -48,14 +48,14 @@ namespace VNASTWebsite.Controllers
                 else if (currentUser.privilege[0] == "manager")
                 {
                     //   string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
-                    //   var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
+                    //   var userTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     string get_userGroupManagerOf = AccountController.apiRequestController.RequestGet("groups/get/managerof");
-                    var userGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
+                    var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
                     //   currentUser.Assignments = userTasks;
                     currentUser.Groups = userGroups;
 
                     string get_ManagerTasks = AccountController.apiRequestController.RequestGet("tasks/get/managedtasks");
-                    var ManagerTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+                    var ManagerTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
                     currentUser.tasks = ManagerTasks;
 
                     List<User> managerWorkers = new List<User>();
@@ -65,7 +65,7 @@ namespace VNASTWebsite.Controllers
                         foreach (var item1 in item.workers)
                         {
                             string get_User = AccountController.apiRequestController.RequestGet("users/" + item1);
-                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                            var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
                             if (user != null)
                             {
                                 item.Workers.Add(user);
@@ -126,14 +126,12 @@ namespace VNASTWebsite.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
@@ -202,6 +200,18 @@ namespace VNASTWebsite.Controllers
             {
                 return View("Error");
             }
+        }
+
+        public ActionResult UserHomePage()
+        {
+            ViewBag.Message = "User Home Page";
+            return View();
+        }
+
+        public ActionResult Chat()
+        {
+            ViewBag.Message = "Chat";
+            return View();
         }
     }
 }
