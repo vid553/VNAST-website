@@ -12,7 +12,7 @@ namespace VNASTWebsite.Controllers
     [HandleError]
     public class HomeController : Controller
     {
-
+        public static string sortBy { get; set; }
         public ActionResult Index()
         {
             //     APIController api = AccountController.apiRequestController;
@@ -56,12 +56,30 @@ namespace VNASTWebsite.Controllers
 
                     string get_ManagerTasks = AccountController.apiRequestController.RequestGet("tasks/get/managedtasks");
                     var ManagerTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+
                     currentUser.tasks = ManagerTasks;
+                    switch (sortBy)
+                    {
+                        case "priority":
+                            currentUser.tasks = currentUser.tasks.OrderByDescending(x => x.priority.Length).ThenBy(x => x.priority == null).ThenBy(x => x.priority).ToList();
+                            break;
+                        case "status":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.status[0]).ToList();
+                            break;
+                        case "time_limit":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.time_limit).ToList();
+                            break;
+                        case "name":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.name).ToList();
+                            break;
+                    }
 
                     List<User> managerWorkers = new List<User>();
                     foreach (var item in currentUser.tasks)
                     {
                         string get_User = AccountController.apiRequestController.RequestGet("users/" + item.assigned_to_worker);
+                        
+                       
                         try
                         {
                             var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
@@ -92,6 +110,11 @@ namespace VNASTWebsite.Controllers
 
 
                     }
+
+
+                    
+
+
                     currentUser.workers = managerWorkers;
                     return View(currentUser);
                 }
@@ -297,6 +320,31 @@ namespace VNASTWebsite.Controllers
            
         }
 
-       
+        void Sort() { }
+
+        public ActionResult SortByPriority(string id)
+        {
+
+            sortBy = "priority";
+            return RedirectToAction("Index");
+        }
+        public ActionResult SortByStatus(string id)
+        {
+
+            sortBy = "status";
+            return RedirectToAction("Index");
+        }
+            public ActionResult SortByName(string id)
+        {
+
+            sortBy = "name";
+            return RedirectToAction("Index");
+        }
+        public ActionResult SortByTimeLimit(string id)
+        {
+
+            sortBy = "time_limit";
+            return RedirectToAction("Index");
+        }
     }
 }
