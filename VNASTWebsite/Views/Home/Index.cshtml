@@ -339,7 +339,7 @@ else
 
                             </td>
                             <td>
-                                @Html.ActionLink("Assign", "Assign", new { id = item._id })<!-- @* @item.Created_date.ToString("dd/MM/yyyy")*@-->
+                                <!-- @* @item.Created_date.ToString("dd/MM/yyyy")*@-->
                             </td>
                             <td>
                                 UNASSIGNED
@@ -354,7 +354,7 @@ else
 
                                 -->
                             </td>
-
+                            <td>@Html.ActionLink("Assign", "Assign", new { id = item._id })</td>
                         </tr>
                     }
                 }

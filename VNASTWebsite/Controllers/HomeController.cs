@@ -62,9 +62,13 @@ namespace VNASTWebsite.Controllers
                     foreach (var item in currentUser.tasks)
                     {
                         string get_User = AccountController.apiRequestController.RequestGet("users/" + item.assigned_to_worker);
-                        var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                        try
+                        {
+                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
 
-                        item.assigned_to_workerName = user.username;
+                            item.assigned_to_workerName = user.username;
+                        }
+                        catch { }
                     }
                     foreach (var item in userGroups)
                     {
