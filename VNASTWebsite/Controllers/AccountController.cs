@@ -201,7 +201,7 @@ namespace VNASTWebsite.Controllers
                 var user = new ApplicationUser { UserName = model.Username, Email = model.Email, Privilege = model.Privilege };
             }
 
-            bool post_register = apiRequestController.RegisterRequest(model.Username, model.Password);
+            bool post_register = apiRequestController.RegisterRequest(model.Username, model.Password, model.Privilege, model.Email);
             if (post_register)
             {
                 var ident = new ClaimsIdentity(

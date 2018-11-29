@@ -70,7 +70,7 @@ namespace VNASTWebsite.Controllers
         }
 
         // POST: Register new user
-        public bool RegisterRequest(string username, string password, string privilege = "", string email = "") // TODO handle privilege and email
+        public bool RegisterRequest(string username, string password, string privilege = "", string email = "")
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
                 .Create(serverUrl + "register");
@@ -79,7 +79,8 @@ namespace VNASTWebsite.Controllers
             webRequest.Accept = "application/json";
             using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
             {
-                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\"}}", username, password);
+                Func<string, string> f = s => string.IsNullOrEmpty(s) ? string.Empty : string.Format("{0},", s);
+                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\",\"privilege\":\"{2}\",\"email\":\"{3}\"}}", f(username), f(password), f(privilege), f(email));
                 streamWriter.Write(requestBody);
                 streamWriter.Close();
             }
