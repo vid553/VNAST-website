@@ -6,62 +6,66 @@
 }
 
 <h2>Add New Assignment</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.priority, new { @class = "form-control" })
-        </div>
+<div class="row">
+    <div class="col-md-8">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.priority, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })
+                <div class="col-md-offset-2  col-md-10">
+                    @Html.TextBoxFor(m => m.status, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })
+                <div class="col-md-offset-2 col-md-10">
+                    @Html.TextBoxFor(m => m.created_date, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })
+                <div class="col-md-offset-2  col-md-10">
+                    @Html.TextBoxFor(m => m._id, new { @class = "form-control" })
+                </div>
+            </div>
+            <hr />
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })
+                <div class="col-md-offset-2  col-md-10">
+                    @Html.TextBoxFor(m => m.name, new { @class = "form-control" })
+                </div>
+            </div>
+            @*
+            <div class="form-group">
+                @Html.LabelFor(m => m.created_by, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.created_by, new { @class = "form-control" })
+                </div>
+            </div>
+            *@
+            <div class="col-md-offset-2 form-group">
+                @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })
+                <div class="col-md-offset-2 col-md-10">
+                    @Html.TextBoxFor(m => m.description, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-offset-2 form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Save" />
+                </div>
+            </div>
+        }
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.status, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.created_date, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m._id, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.name, new { @class = "form-control" })
-        </div>
-    </div>
-    @*
-    <div class="form-group">
-        @Html.LabelFor(m => m.created_by, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.created_by, new { @class = "form-control" })
-        </div>
-    </div>
-    *@
-    <div class="form-group">
-        @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.description, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Save" />
-        </div>
-    </div>
-}
+</div>
 
 <div>
     @Html.ActionLink("Back to List", "Assignments")
