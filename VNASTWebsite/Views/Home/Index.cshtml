@@ -18,7 +18,8 @@
                 <tr><th>PENDING TASKS</th></tr>
                 <tr>
                     <th>Name</th>
-
+                    <th>Status</th>
+                    <th>Change status</th>
                     <th>Deadline</th>
 
                 </tr>
@@ -38,8 +39,17 @@
                                     <p>Status: @item.status[0]</p>
                                 </details>
                             </td>
-                            <td></td>
+                            <td>@item.status[0]</td>
+                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                            <td>@if (item.time_limit != null)
+                            {
+                                @item.time_limit.ToString("dd/MM/yyyy")
+                            } </td>
+                             
+                                
 
+                         
+                               
 
                         </tr>
 
@@ -58,7 +68,8 @@
                 <tr><th>ONGOING TASKS</th></tr>
                 <tr>
                     <th>Name</th>
-
+                    <th>Status</th>
+                    <th>Change status</th>
                     <th>Deadline</th>
 
                 </tr>
@@ -77,8 +88,15 @@
                                     <p>Description: @item.description</p>
                                     <p>Status: @item.status[0]</p>
                                 </details>
-                            </td>
-                            <td></td>
+                                </td>
+                            <td>@item.status[0]</td>
+                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                            <td>
+                                @if (item.time_limit != null)
+                                {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                }
+                        </td>
 
 
                         </tr>
@@ -97,7 +115,8 @@
                 <tr><th>CANCELED TASKS</th></tr>
                 <tr>
                     <th>Name</th>
-
+                    <th>Status</th>
+                    <th>Change status</th>
                     <th>Deadline</th>
 
                 </tr>
@@ -117,8 +136,15 @@
                                     <p>Status: @item.status[0]</p>
                                 </details>
                             </td>
-                            <td></td>
-
+                           
+                            <td>@item.status[0]</td>
+                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                            <td>
+                                @if (item.time_limit != null)
+                                {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                }
+                        </td>
 
                         </tr>
 
@@ -136,7 +162,8 @@
                 <tr><th>COMPLETED TASKS</th></tr>
                 <tr>
                     <th>Name</th>
-
+                    <th>Status</th>
+                    <th>Change status</th>
                     <th>Deadline</th>
 
                 </tr>
@@ -156,7 +183,14 @@
                                     <p>Status: @item.status[0]</p>
                                 </details>
                             </td>
-                            <td></td>
+                            <td>@item.status[0]</td>
+                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                            <td>
+                                @if (item.time_limit != null)
+                                {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                }
+                        </td>
 
 
                         </tr>
