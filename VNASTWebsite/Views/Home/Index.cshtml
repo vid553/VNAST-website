@@ -224,6 +224,7 @@
 
                         <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
                         <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id })</th>
+                        <th>@Html.ActionLink("New Chat", "CreateChat", "Chat", new { user_id = item._id }, null)</th>
                     </tr>
 
                 }

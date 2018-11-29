@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Chats";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.privilege[0] != "worker")
+{
+    <h3 class="text-success">All Chats</h3>
+    <table align="center" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Talking to</th>
+                <th>Created date</th>
+                <th>Chat ID</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.all_chats)
+            {
+                <tr>
+                    <td>@item.participants[1]</td>
+                    <td>@item.created_date</td>
+                    <td>@item._id</td>
+                    <td>@Html.ActionLink("Open Chat", "ShowChat", new { id = item._id })</td>
+                    <td>@Html.ActionLink("Delete", "DeleteChat", new { id = item._id })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2 class="text-success">My Chats</h2>
+
+    <table align="center" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Talking to</th>
+                <th>Created date</th>
+                <th>Chat ID</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.my_chats)
+            {
+                <tr>
+                    <td>@item.participants[1]</td>
+                    <td>@item.created_date</td>
+                    <td>@item._id</td>
+                    <td>@Html.ActionLink("Open Chat", "ShowChat", new { id = item._id })</td>
+                    <td>@Html.ActionLink("Delete", "DeleteChat", new { id = item._id })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

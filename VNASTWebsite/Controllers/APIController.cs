@@ -18,7 +18,7 @@ namespace VNASTWebsite.Controllers
         private string userToken;
         private bool authenticated;
 
-        // GET: API
+        // Get api
         public ActionResult Index()
         {
             return View();
@@ -121,6 +121,81 @@ namespace VNASTWebsite.Controllers
                 JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
                 serializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 string requestBody = JsonConvert.SerializeObject(assignment, serializerSettings);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                JObject response = JObject.Parse(jsonResponse);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
+        }
+
+        // POST: Send message to chat - request parameter is message to send
+        public bool SendMessage(string chat_id, string message)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "chats/" + chat_id);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Accept = "application/json";
+            webRequest.Headers.Add("x-access-token", userToken);
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                string requestBody = string.Format("{{\"content\":\"{0}\"}}", message);
+                streamWriter.Write(requestBody);
+                streamWriter.Close();
+            }
+
+            string jsonResponse = "";
+            try
+            {
+                using (Stream s = webRequest.GetResponse().GetResponseStream())
+                {
+                    using (StreamReader sr = new StreamReader(s))
+                    {
+                        jsonResponse = sr.ReadToEnd();
+                    }
+                }
+
+                JObject response = JObject.Parse(jsonResponse);
+                // TODO parse it and return it
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
+        }
+
+        // POST: create chat with user - request parameter is this users id
+        public bool CreateChat(string user_id)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest
+                .Create(serverUrl + "chats");
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json; charset=UTF-8";
+            webRequest.Accept = "application/json";
+            webRequest.Headers.Add("x-access-token", userToken);
+            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+            {
+                string requestBody = string.Format("{{\"userId\":\"{0}\"}}", user_id);
                 streamWriter.Write(requestBody);
                 streamWriter.Close();
             }

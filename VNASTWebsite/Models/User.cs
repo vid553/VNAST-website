@@ -27,6 +27,8 @@ namespace VNASTWebsite.Models
         public List<Assignment> Assignments { get; set; }
         public List<Assignment> tasks { get; set; }
         public List<Group> Groups { get; set; }
+        public List<Chat> my_chats { get; set; }
+        public List<Chat> all_chats { get; set; }
     }
   
 }
