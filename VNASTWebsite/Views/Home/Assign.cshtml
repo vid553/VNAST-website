@@ -64,12 +64,9 @@
       
         <div class="col-md-10">
             Choose user to assign: 
-            @*        @Html.DropDownListFor(m => m.assigned_to_worker,new SelectList(m.potentialWorkers, "AssignWorker", "Name")*@
             @Html.DropDownListFor(item => item.assigned_to_worker, new SelectList(Model.potentialWorkers, "_id", "username"), "--Select--")
 
-            @*     @Html.HiddenFor(m => m.assigned_to_worker, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.assigned_to_worker, "", new { @class = "text-danger" }) *@
-            <div class="form-group">
+           <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" class="btn btn-default" value="Save" />
                 </div>

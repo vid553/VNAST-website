@@ -401,6 +401,7 @@
                             </td>
                             <td>@item.status[0]</td>
                             <td>@Html.ActionLink("Assign", "Assign", new { id = item._id })</td>
+                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
                         </tr>
                     }
                 }
