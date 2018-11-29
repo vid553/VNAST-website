@@ -10,7 +10,7 @@
 {
     <table align="center" class="table table-striped">
         <thead>
-            <tr>
+            <tr class="info">
                 <th>Time</th>
                 <th>Send by</th>
                 <th>Text</th>
@@ -31,7 +31,7 @@
     using (Html.BeginForm("SendMessage", "Chat"))
     {
         <input type="hidden" name="chat_id" value="@id">
-        <input type="text" name="reply" style="height:30px" />
+        <input type="text" name="reply" title="Input text to send" style="height:35px" />
         <input type="submit" value="Send" class="btn btn-primary" />
     }
 }
