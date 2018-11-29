@@ -170,6 +170,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811071639307_InitialCreate.cs" />
+    <Compile Include="Migrations\201811071639307_InitialCreate.Designer.cs">
+      <DependentUpon>201811071639307_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Assignment.cs" />
     <Compile Include="Models\Chat.cs" />
@@ -246,8 +251,7 @@
     <Content Include="Views\Assignment\AddAssignment.cshtml" />
     <Content Include="Views\Home\Assign.cshtml" />
     <Content Include="Views\Home\UserHomePage.cshtml" />
-    <Content Include="Views\Chat\Chat.cshtml" />
-    <Content Include="Views\Chat\Messages.cshtml" />
+    <Content Include="Views\Home\Chat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -259,6 +263,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201811071639307_InitialCreate.resx">
+      <DependentUpon>201811071639307_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

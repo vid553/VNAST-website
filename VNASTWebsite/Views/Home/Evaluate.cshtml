@@ -1,12 +1,9 @@
 ﻿@model VNASTWebsite.Models.Assignment
-
 @{
-    ViewBag.Title = "Assign";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-
+    ViewBag.Title = "Evaluate";
 }
 
-<h2>Assign</h2>
+<h2>Evaluate</h2>
 
 @using (Html.BeginForm())
 {@Html.AntiForgeryToken()
@@ -59,13 +56,23 @@
         <div class="col-md-10">
             @Html.HiddenFor(m => m.description)
         </div>
+    </div><div class="form-group">
+    @*   @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })*@
+    <div class="col-md-10">
+        @Html.HiddenFor(m => m.assigned_to_worker)
     </div>
+</div>
     <div class="form-group">
-      
+
         <div class="col-md-10">
-            Choose user to assign: 
+            Change assignment status:
             @*        @Html.DropDownListFor(m => m.assigned_to_worker,new SelectList(m.potentialWorkers, "AssignWorker", "Name")*@
-            @Html.DropDownListFor(item => item.assigned_to_worker, new SelectList(Model.potentialWorkers, "_id", "username"), "--Select--")
+            @Html.DropDownListFor(item => item.status, 
+            new List<SelectListItem> { 
+                       new SelectListItem { Value = "canceled" , Text = "Canceled" },
+                       new SelectListItem { Value = "ongoing" , Text = "Ongoing" },
+                       new SelectListItem { Value = "pending" , Text = "Pending" },
+            new SelectListItem { Value = "completed" , Text = "Completed" }}, "--Select--")
 
             @*     @Html.HiddenFor(m => m.assigned_to_worker, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.assigned_to_worker, "", new { @class = "text-danger" }) *@
@@ -75,10 +82,10 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
-  
+
 }
 
 

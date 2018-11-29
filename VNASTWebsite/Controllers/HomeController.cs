@@ -12,7 +12,7 @@ namespace VNASTWebsite.Controllers
     [HandleError]
     public class HomeController : Controller
     {
-
+        public static string sortBy { get; set; }
         public ActionResult Index()
         {
             //     APIController api = AccountController.apiRequestController;
@@ -50,21 +50,43 @@ namespace VNASTWebsite.Controllers
                     //   string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
                     //   var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     string get_userGroupManagerOf = AccountController.apiRequestController.RequestGet("groups/get/managerof");
-                    var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
+                    var userGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
                     //   currentUser.Assignments = userTasks;
                     currentUser.Groups = userGroups;
 
                     string get_ManagerTasks = AccountController.apiRequestController.RequestGet("tasks/get/managedtasks");
-                    var ManagerTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+                    var ManagerTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+
                     currentUser.tasks = ManagerTasks;
+                    switch (sortBy)
+                    {
+                        case "priority":
+                            currentUser.tasks = currentUser.tasks.OrderByDescending(x => x.priority.Length).ThenBy(x => x.priority == null).ThenBy(x => x.priority).ToList();
+                            break;
+                        case "status":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.status[0]).ToList();
+                            break;
+                        case "time_limit":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.time_limit).ToList();
+                            break;
+                        case "name":
+                            currentUser.tasks = currentUser.tasks.OrderBy(x => x.name).ToList();
+                            break;
+                    }
 
                     List<User> managerWorkers = new List<User>();
                     foreach (var item in currentUser.tasks)
                     {
                         string get_User = AccountController.apiRequestController.RequestGet("users/" + item.assigned_to_worker);
-                        var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                        
+                       
+                        try
+                        {
+                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
 
-                        item.assigned_to_workerName = user.username;
+                            item.assigned_to_workerName = user.username;
+                        }
+                        catch { }
                     }
                     foreach (var item in userGroups)
                     {
@@ -72,7 +94,7 @@ namespace VNASTWebsite.Controllers
                         foreach (var item1 in item.workers)
                         {
                             string get_User = AccountController.apiRequestController.RequestGet("users/" + item1);
-                            var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
                             if (user != null)
                             {
                                 item.Workers.Add(user);
@@ -88,6 +110,11 @@ namespace VNASTWebsite.Controllers
 
 
                     }
+
+
+                    
+
+
                     currentUser.workers = managerWorkers;
                     return View(currentUser);
                 }
@@ -178,7 +205,6 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult DeleteUser(string id)
         {
-            /*
             bool delete_user = AccountController.apiRequestController.RequestDelete("users/" + id);
             if (delete_user)
             {
@@ -188,8 +214,6 @@ namespace VNASTWebsite.Controllers
             {
                 return View("Error");
             }
-            */
-            return RedirectToAction("Index");
         }
         public ActionResult Assign(string id)
         {
@@ -221,6 +245,106 @@ namespace VNASTWebsite.Controllers
         {
             ViewBag.Message = "User Home Page";
             return View();
+        }
+
+        public ActionResult Chat()
+        {
+            ViewBag.Message = "Chat";
+            return View();
+        }
+        public ActionResult Evaluate(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            return View(assignmentToEdit);
+        }
+
+        [HttpPost]
+        public ActionResult Evaluate(Models.Assignment assignment)
+        {
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignment);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+        public ActionResult Accept(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            assignmentToEdit.status[0] = "completed";
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignmentToEdit);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+           
+        }
+        public ActionResult Decline(string id)
+        {
+
+            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+            string get_users = AccountController.apiRequestController.RequestGet("users");
+            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+            assignmentToEdit.potentialWorkers = users;
+            assignmentToEdit.status[0] = "ongoing";
+            bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignmentToEdit);
+            if (update_data)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View("Error");
+            }
+           
+        }
+
+        void Sort() { }
+
+        public ActionResult SortByPriority(string id)
+        {
+
+            sortBy = "priority";
+            return RedirectToAction("Index");
+        }
+        public ActionResult SortByStatus(string id)
+        {
+
+            sortBy = "status";
+            return RedirectToAction("Index");
+        }
+            public ActionResult SortByName(string id)
+        {
+
+            sortBy = "name";
+            return RedirectToAction("Index");
+        }
+        public ActionResult SortByTimeLimit(string id)
+        {
+
+            sortBy = "time_limit";
+            return RedirectToAction("Index");
         }
     }
 }
