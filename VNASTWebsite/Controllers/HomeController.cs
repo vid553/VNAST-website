@@ -50,12 +50,12 @@ namespace VNASTWebsite.Controllers
                     //   string get_userTasks = AccountController.apiRequestController.RequestGet("tasks/get/mytasks");
                     //   var userTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_userTasks);
                     string get_userGroupManagerOf = AccountController.apiRequestController.RequestGet("groups/get/managerof");
-                    var userGroups = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
+                    var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroupManagerOf);
                     //   currentUser.Assignments = userTasks;
                     currentUser.Groups = userGroups;
 
                     string get_ManagerTasks = AccountController.apiRequestController.RequestGet("tasks/get/managedtasks");
-                    var ManagerTasks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
+                    var ManagerTasks = JsonConvert.DeserializeObject<List<Assignment>>(get_ManagerTasks);
 
                     currentUser.tasks = ManagerTasks;
                     switch (sortBy)
@@ -82,7 +82,7 @@ namespace VNASTWebsite.Controllers
                        
                         try
                         {
-                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                            var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
 
                             item.assigned_to_workerName = user.username;
                         }
@@ -94,7 +94,7 @@ namespace VNASTWebsite.Controllers
                         foreach (var item1 in item.workers)
                         {
                             string get_User = AccountController.apiRequestController.RequestGet("users/" + item1);
-                            var user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
+                            var user = JsonConvert.DeserializeObject<User>(get_User.TrimStart('[').TrimEnd(']'));
                             if (user != null)
                             {
                                 item.Workers.Add(user);
@@ -106,14 +106,7 @@ namespace VNASTWebsite.Controllers
                                 }
                             }
                         }
-
-
-
                     }
-
-
-                    
-
 
                     currentUser.workers = managerWorkers;
                     return View(currentUser);
@@ -205,6 +198,7 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult DeleteUser(string id)
         {
+            /*
             bool delete_user = AccountController.apiRequestController.RequestDelete("users/" + id);
             if (delete_user)
             {
@@ -214,6 +208,8 @@ namespace VNASTWebsite.Controllers
             {
                 return View("Error");
             }
+            */
+            return RedirectToAction("Index");
         }
         public ActionResult Assign(string id)
         {
@@ -247,11 +243,6 @@ namespace VNASTWebsite.Controllers
             return View();
         }
 
-        public ActionResult Chat()
-        {
-            ViewBag.Message = "Chat";
-            return View();
-        }
         public ActionResult Evaluate(string id)
         {
 
