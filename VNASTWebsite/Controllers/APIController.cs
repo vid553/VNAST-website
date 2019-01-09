@@ -14,7 +14,7 @@ namespace VNASTWebsite.Controllers
 {
     public class APIController : Controller
     {
-        private string serverUrl = "http://65.52.129.150:3000/";
+        private string serverUrl = "http://13.80.47.169:3000/";
         private string userToken;
         private bool authenticated;
 

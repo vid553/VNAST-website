@@ -1,9 +1,68 @@
-﻿@{
+﻿@model VNASTWebsite.Models.User
+
+@{
+    ViewBag.Title = "Your account information";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
+@if (Model != null)
+{
 
-<p>
-    Here user personal info will be displayed...
-</p>
+    <h2>@ViewBag.Title</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">username:</div>
+            <div class="col-md-2">@Model.username</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">email:</div>
+            <div class="col-md-2">@Model.email</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">id:</div>
+            <div class="col-md-2">@Model._id</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">your privileges:</div>
+            @foreach (var privilege in Model.privilege)
+            {
+                <div class="col-md-2">@privilege</div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-md-2"><br /></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">member of any chats:</div>
+            @if (Model.my_chats.Count > 0)
+            {
+                <div class="col-md-2">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-2">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-md-2">member of any groups:</div>
+            @if (Model.Groups != null && Model.Groups.Count > 0)
+            {
+                <div class="col-md-2">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-2">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </div>
+            }
+        </div>
+    </div>
+}

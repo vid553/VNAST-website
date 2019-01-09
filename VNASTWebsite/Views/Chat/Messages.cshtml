@@ -20,7 +20,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.created_date</td>
+                    <td>@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</td>
                     <td>@item.created_by</td>
                     <td>@item.content</td>
                 </tr>

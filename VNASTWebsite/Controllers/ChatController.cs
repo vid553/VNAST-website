@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using VNASTWebsite.Models;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace VNASTWebsite.Controllers
 {
@@ -22,14 +23,40 @@ namespace VNASTWebsite.Controllers
 
                 string get_my_chats = AccountController.apiRequestController.RequestGet("chats/get/memberin");
                 var my_chats = JsonConvert.DeserializeObject<List<Chat>>(get_my_chats);
+                List<Chat> new_my_chats = new List<Chat>();
+                foreach (Chat chat in my_chats)
+                {
+                    List<string> created_by_names = new List<string>();
+                    foreach (string id in chat.participants)
+                    {
+                        string get_user = AccountController.apiRequestController.RequestGet("users/" + id);
+                        var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                        created_by_names.Add(user.username);
+                    }
+                    chat.participants = created_by_names;
+                    new_my_chats.Add(chat);
+                }
                 currentUser.my_chats = my_chats;
 
+                // display also chats from other users
                 if (currentUser.privilege[0] == "admin" || currentUser.privilege[0] == "manager")
                 {
-                    // display also chats from other users
                     string get_chats = AccountController.apiRequestController.RequestGet("chats");
                     var all_chats = JsonConvert.DeserializeObject<List<Chat>>(get_chats);
-                    currentUser.all_chats = all_chats;
+                    List<Chat> new_all_chats = new List<Chat>();
+                    foreach (Chat chat in all_chats)
+                    {
+                        List<string> created_by_names = new List<string>();
+                        foreach (string id in chat.participants)
+                        {
+                            string get_user = AccountController.apiRequestController.RequestGet("users/" + id);
+                            var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                            created_by_names.Add(user.username);
+                        }
+                        chat.participants = created_by_names;
+                        new_all_chats.Add(chat);
+                    }
+                    currentUser.all_chats = new_all_chats;
                 }
                 else
                 {
@@ -47,7 +74,15 @@ namespace VNASTWebsite.Controllers
         {
             string get_messages = AccountController.apiRequestController.RequestGet("chats/" + id);
             var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
-
+            List<Message> updated_messages = new List<Message>();
+            foreach (Message message in messages)
+            {
+                string created_by_id = message.created_by;
+                string get_user = AccountController.apiRequestController.RequestGet("users/" + created_by_id);
+                var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                message.created_by = user.username;
+                updated_messages.Add(message);
+            }
             ViewBag.Message = "Chat name";
             return View("Messages", messages);
         }

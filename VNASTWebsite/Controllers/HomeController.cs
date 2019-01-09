@@ -15,9 +15,8 @@ namespace VNASTWebsite.Controllers
         public static string sortBy { get; set; }
         public ActionResult Index()
         {
-            //     APIController api = AccountController.apiRequestController;
+            //   APIController api = AccountController.apiRequestController;
             //   string json = api.RequestGet("/me");
-
             try
             {
                 string get_currentUser = AccountController.apiRequestController.RequestGet("me");
@@ -239,8 +238,24 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult UserHomePage()
         {
-            ViewBag.Message = "User Home Page";
-            return View();
+            try
+            {
+                string get_currentUser = AccountController.apiRequestController.RequestGet("me");
+                var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
+
+                string get_my_chats = AccountController.apiRequestController.RequestGet("chats/get/memberin");
+                var my_chats = JsonConvert.DeserializeObject<List<Chat>>(get_my_chats);
+                currentUser.my_chats = my_chats;
+
+                string get_userGroup = AccountController.apiRequestController.RequestGet("groups/get/memberin");
+                var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroup);
+                currentUser.Groups = userGroups;
+
+                return View(currentUser);
+            }
+            catch {
+                return View();
+            }
         }
 
         public ActionResult Evaluate(string id)
