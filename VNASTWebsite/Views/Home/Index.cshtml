@@ -1,251 +1,137 @@
-﻿@{
+﻿@using VNASTWebsite.Models;
+@{
     ViewBag.Title = "Home Page";
 
 
     int counter1 = 0, counter2 = 0, counter3 = 0, counter4 = 0;
 }
-
-
-
-
-
+<script type="text/javascript">
+    function showDetails(row) {
+        var nextrow = row.parentNode.rows[row.rowIndex]; //row.RowIndex je 1-based 4 sum reason
+        var sp = nextrow.children[0].children[0]
+        if (sp.hidden) {
+            sp.hidden = false;
+        }
+        else {
+            sp.hidden = true;
+        }
+    }
+</script>
 @if (Model != null)
 {
+
+
     if (Model.privilege[0] == "worker")
     {
+        // NEW:
+        <h1>YOUR TASKS</h1>
         <table align="center" class="table table-striped table-hover">
             <thead>
-                <tr><th>PENDING TASKS</th></tr>
                 <tr>
-                    <th>@Html.ActionLink("NAME", "SortByName", new { id = Model._id })</th>
-                    <th>Status</th>
-                    <th>Change status</th>
-                    <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
-
-                   
+                    <th>
+                        <h3 style="display:inline;">@Html.ActionLink("Priority", "Index", new { sort = "priority" })</h3>@if (Request.Params["sort"] != null && Request.Params["sort"] == "priority")
+                        {<span style="display:inline;" class="glyphicon glyphicon-chevron-down"></span>}
+                    </th>
+                    <th>
+                        <h3 style="display:inline;">@Html.ActionLink("Status", "Index", new { sort = "status" })</h3>@if (Request.Params["sort"] != null && Request.Params["sort"] == "status")
+                        {<span style="display:inline;" class="glyphicon glyphicon-chevron-down"></span>}
+                    </th>
+                    <th>
+                        <h3 style="display:inline;">@Html.ActionLink("Name", "Index", new { sort = "name" })</h3>@if (Request.Params["sort"] != null && Request.Params["sort"] == "name")
+                        {<span style="display:inline;" class="glyphicon glyphicon-chevron-down"></span>}
+                    </th>
+                    <th>
+                        <h3 style="display:inline;">@Html.ActionLink("Deadline", "Index", new { sort = "deadline" })</h3>@if (Request.Params["sort"] != null && Request.Params["sort"] == "deadline")
+                        {<span style="display:inline;" class="glyphicon glyphicon-chevron-down"></span>}
+                    </th>
+                    <th> </th>
+                    @*<th><h3>@Html.ActionLink("Status", "Index", new { sort = "status" })</h3></th>
+                        <th><h3>@Html.ActionLink("Name", "Index", new { sort = "name" })</h3></th>
+                        <th><h3>@Html.ActionLink("Deadline", "Index", new { sort = "deadline" })</h3></th>
+                        <th> </th>*@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.tasks)
-                {
-                    if (item.status[0] == "pending")
+                @{
+                    string filter;
+                    if (Request.Params["sort"] != null)
                     {
-                        counter1++;
-                        <tr>
-                            <td>
-                                @item.name<details>
-    <summary>Details @if(item.documents.Count>1){<b>[This assignment has files]</b>}</summary>
-    <p>Creation date: @item.created_date</p>
-    <p>Description: @item.description</p>
-    <p>Status: @item.status[0]</p>
-    @foreach (var doc in item.documents)
-       
-    {
-        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid=doc._id, path=doc.path, mime=doc.mimetype, orgname=doc.originalname }) 
-      
-        <br />
-    }
-</details>
-                            </td>
-                            <td>@item.status[0]</td>
-                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
-                            <td>@if (item.time_limit != null)
-                            {
-                                @item.time_limit.ToString("dd/MM/yyyy")
-                            } </td>
-                             
-                                
-
-                         
-                               
-
-                        </tr>
-
+                        filter = Request.Params["sort"];
                     }
+                    else
+                    {
+                        filter = "deadline";
+                    }
+                    // filter items
+                    List<Assignment> tasks = Model.tasks;
+                    switch (filter)
+                    {
+                        case "priority":
+                            tasks = tasks.OrderByDescending(t => t.priority).ToList();
+                            break;
+                        case "name":
+                            tasks = tasks.OrderBy(t => t.name).ToList();
+                            break;
+                        case "deadline":
+                            tasks = tasks.OrderByDescending(t => t.time_limit).ToList();
+                            break;
+                        case "status":
+                            tasks = tasks.OrderByDescending(t => t.status[0]).ToList();
+                            break;
+                        default:
+                            tasks = tasks.OrderByDescending(t => t.time_limit).ToList();  // deadline
+                            break;
+                    }
+
+                }
+                @foreach (var item in tasks)
+                {
+
+                    counter1++;
+                    <tr onclick="showDetails(this)">
+                        <td>@item.priority</td>
+                        <td>@item.status[0]</td>
+                        <td>
+                            @item.name@if (item.documents.Count > 1) {<b>[This assignment has files]</b>}
+                        </td>
+                        <td>
+                            @if (item.time_limit != null)
+                            {
+                                @item.time_limit.Value.ToString("dd. MM. yyyy")
+                            }
+                        </td>
+                        <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <span hidden>
+                                @item.description
+                                                        @foreach (var doc in item.documents)
+
+                                                        {
+                                                            @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid = doc._id, path = doc.path, mime = doc.mimetype, orgname = doc.originalname })
+
+                                                            <br />
+                                                        }
+                                                    </span>
+                        </td>
+                    </tr>
                 }
                 @if (counter1 == 0)
                 {
                     <tr><td>No pending assignments</td><td></td></tr>
                 }
-
             </tbody>
         </table>
 
+
+        <h1 style="margin-top:50px;">YOUR GROUPS</h1>
         <table align="center" class="table table-striped table-hover">
             <thead>
-                <tr><th>ONGOING TASKS</th></tr>
                 <tr>
-                    <th>@Html.ActionLink("NAME", "SortByName", new { id = Model._id })</th>
-                    <th>Status</th>
-                    <th>Change status</th>
-                    <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.tasks)
-                {
-                    if (item.status[0] == "ongoing")
-                    {
-                        counter2++;
-                        <tr>
-                            <td>
-                                @item.name<details>
-                                              <summary>Details @if (item.documents.Count > 1)
-                                              {<b>[This assignment has files]</b>}</summary>
-                                    <p>Creation date: @item.created_date</p>
-                                    <p>Description: @item.description</p>
-                                    <p>Status: @item.status[0]</p>
-                                 @foreach (var doc in item.documents)
-       
-    {
-        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid=doc._id, path=doc.path, mime=doc.mimetype, orgname=doc.originalname }) 
-      
-        <br />
-    }
-                                </details>
-                                </td>
-                            <td>@item.status[0]</td>
-                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
-                            <td>
-                                @if (item.time_limit != null)
-                                {
-                                    @item.time_limit.ToString("dd/MM/yyyy")
-                                }
-                        </td>
-
-
-                        </tr>
-
-                    }
-                }
-                @if (counter2 == 0)
-                {
-                    <tr><td>No ongoing assignments</td><td></td></tr>
-                }
-
-            </tbody>
-        </table>
-        <table align="center" class="table table-striped table-hover">
-            <thead>
-                <tr><th>CANCELED TASKS</th></tr>
-                <tr>
-                    <th>@Html.ActionLink("NAME", "SortByName", new { id = Model._id })</th>
-                    <th>Status</th>
-                    <th>Change status</th>
-                    <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.tasks)
-                {
-                    if (item.status[0] == "canceled")
-                    {
-                        counter3++;
-                        <tr>
-                            <td>
-                                @Html.ActionLink("NAME", "SortByName", new { id = Model._id })<details>
-                                                                                                  <summary>Details @if (item.documents.Count > 1)
-                                                                                                  {<b>[This assignment has files]</b>}</summary>
-    <p>Creation date: @item.created_date</p>
-    <p>Description: @item.description</p>
-    <p>Status: @item.status[0]</p>
-    @foreach (var doc in item.documents)
-
-    {
-        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid = doc._id, path = doc.path, mime = doc.mimetype, orgname = doc.originalname })
-
-        <br />
-    }
-</details>
-                            </td>
-                           
-                            <td>@item.status[0]</td>
-                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
-                            <td>
-                                @if (item.time_limit != null)
-                                {
-                                    @item.time_limit.ToString("dd/MM/yyyy")
-                                }
-                        </td>
-
-                        </tr>
-
-                    }
-                }
-                @if (counter3 == 0)
-                {
-                    <tr><td>No canceled assignments</td><td></td></tr>
-                }
-
-            </tbody>
-        </table>
-        <table align="center" class="table table-striped table-hover">
-            <thead>
-                <tr><th>COMPLETED TASKS</th></tr>
-                <tr>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Change status</th>
-                    <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.tasks)
-                {
-                    if (item.status[0] == "completed")
-                    {
-                        counter4++;
-                        <tr>
-                            <td>
-                               
-                                <details>
-                                    <summary>Details @if (item.documents.Count > 1)
-                                    {<b>[This assignment has files]</b>}</summary>
-                                    <p>Creation date: @item.created_date</p>
-                                    <p>Description: @item.description</p>
-                                    <p>Status: @item.status[0]</p>
-                                    @foreach (var doc in item.documents)
-
-                                    {
-                                        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid = doc._id, path = doc.path, mime = doc.mimetype, orgname = doc.originalname })
-
-                                        <br />
-                                    }
-                                </details>
-                            </td>
-                            <td>@item.status[0]</td>
-                            <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
-                            <td>
-                                @if (item.time_limit != null)
-                                {
-                                    @item.time_limit.ToString("dd/MM/yyyy")
-                                }
-                        </td>
-
-
-                        </tr>
-
-                    }
-                }
-                @if (counter4 == 0)
-                {
-                    <tr><td>No pending assignments</td><td></td></tr>
-                }
-
-            </tbody>
-        </table>
-
-        <table align="center" class="table table-striped table-hover">
-            <thead>
-                <tr><th>YOUR GROUPS</th></tr>
-                <tr>
-                    <th>Name</th>
-                    <th>No. of Workers</th>
-                    <th>Created</th>
-
+                    <th><h3>Name</h3></th>
+                    <th><h3>No. of Workers</h3></th>
+                    <th><h3>Created</h3></th>
                 </tr>
             </thead>
             <tbody>
@@ -255,7 +141,6 @@
                         <th><a href="">@item.name</a></th>
                         <th> @item.workers.Count</th>
                         <th> @item.created_date</th>
-
                     </tr>
                 }
             </tbody>
@@ -270,12 +155,10 @@
             <thead>
                 <tr><th>USERS</th></tr>
                 <tr>
-
                     <th>Username</th>
                     <th>Role</th>
                     <th>Email</th>
                     <th>ID</th>
-
                     <th></th>
                 </tr>
             </thead>
@@ -288,7 +171,6 @@
                         <th> @item.privilege[0]</th>
                         <th> @item.email</th>
                         <th> @item._id</th>
-
                         <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
                         <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id })</th>
                         <th>@Html.ActionLink("New Chat", "CreateChat", "Chat", new { user_id = item._id }, null)</th>
@@ -304,19 +186,17 @@
     }
     else if (Model.privilege[0] == "manager")
     {
-        <h2>GROUPS YOU ARE MANAGER IN</h2>
+        <h1>GROUPS YOU ARE MANAGER IN</h1>
         foreach (var item in Model.Groups)
         {
             <table align="center" class="table  table-striped table-hover">
                 <thead>
                     <tr><th>@item.name</th></tr>
                     <tr>
-
                         <th>Username</th>
                         <th>Role</th>
                         <th>Email</th>
                         <th>ID</th>
-
                         <th></th>
                     </tr>
                 </thead>
@@ -337,15 +217,13 @@
                 </tbody>
             </table>
         }
-        <h2>CREATED TASKS</h2>
+        <h1>CREATED TASKS</h1>
         <table align="center" class="table table-striped table-hover">
             <thead>
-               
                 <tr>
                     <th>@Html.ActionLink("NAME", "SortByName", new { id = Model._id })</th>
                     <th>@Html.ActionLink("PRIORITY", "SortByPriority", new { id = Model._id })</th>
                     <th>Assigned to</th>
-                    
                     <th>@Html.ActionLink("STATUS", "SortByStatus", new { id = Model._id })</th>
                     <th>ASSIGN</th>
                     <th>CHANGE STATUS</th>
@@ -371,19 +249,17 @@
                             <td>
                                 @item.assigned_to_workerName
                             </td>
-                            
-
                             <td>@item.status[0]</td>
                             <td>
-                            @if(item.status[0]=="pending"){
-                                @Html.ActionLink("DECLINE", "Decline", new { id = item._id })
-                            }
-                            else
-                            {
-                            @Html.ActionLink("Assign", "Assign", new { id = item._id })
-                            }
-                                
-                          </td>
+                                @if (item.status[0] == "pending")
+                                {
+                                    @Html.ActionLink("DECLINE", "Decline", new { id = item._id })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Assign", "Assign", new { id = item._id })
+                                }
+                            </td>
                             <td>
                                 @if (item.status[0] == "pending")
                                 {
@@ -391,12 +267,13 @@
                                 else
                                 {
                                     @Html.ActionLink("Change status", "Evaluate", new { id = item._id })}
-                                
-</td>
+                            </td>
                             <td>
-                            @if (item.time_limit != null) { 
-                                @item.time_limit.ToString("dd/MM/yyyy") 
-                            }</td>
+                                @if (item.time_limit != null)
+                                {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                }
+                            </td>
                         </tr>
 
                     }
@@ -404,19 +281,14 @@
                     {
                         <tr>
                             <td>
-                                @item.name<details>
+                                @item.name
+                                <details>
                                     <summary>Details</summary>
                                     <p>Creation date: @item.created_date</p>
                                     <p>Description: @item.description</p>
                                     <p>Status: @item.status[0]</p>
                                     <div>@Html.ActionLink("Assign", "Assign", new { id = item._id })</div>
-
-
-
-
-
                                 </details>
-
                             </td>
                             <td>@item.priority</td>
                             <td>
@@ -438,18 +310,11 @@
                         </tr>
                     }
                 }
-
-
             </tbody>
         </table>
 
     }
 }
-else
-{
-    <!-- Force reload -->
-}
-
 <!--
 <div class="row">
     <div class="col-md-4">
@@ -473,3 +338,443 @@ else
     </div>
 </div>
     -->
+@* OLD
+    @{
+        ViewBag.Title = "Home Page";
+
+
+        int counter1 = 0, counter2 = 0, counter3 = 0, counter4 = 0;
+    }
+
+
+
+
+
+    @if (Model != null)
+    {
+        if (Model.privilege[0] == "worker")
+        {
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+                    <tr><th>PENDING TASKS</th></tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Change status</th>
+                        <th>Deadline</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.tasks)
+                    {
+                        if (item.status[0] == "pending")
+                        {
+                            counter1++;
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                    </details>
+                                </td>
+                                <td>@item.status[0]</td>
+                                <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                                <td>@if (item.time_limit != null)
+                                {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                } </td>
+
+
+
+
+
+
+                            </tr>
+
+                        }
+                    }
+                    @if (counter1 == 0)
+                    {
+                        <tr><td>No pending assignments</td><td></td></tr>
+                    }
+
+                </tbody>
+            </table>
+
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+                    <tr><th>ONGOING TASKS</th></tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Change status</th>
+                        <th>Deadline</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.tasks)
+                    {
+                        if (item.status[0] == "ongoing")
+                        {
+                            counter2++;
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                    </details>
+                                    </td>
+                                <td>@item.status[0]</td>
+                                <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                                <td>
+                                    @if (item.time_limit != null)
+                                    {
+                                        @item.time_limit.ToString("dd/MM/yyyy")
+                                    }
+                            </td>
+
+
+                            </tr>
+
+                        }
+                    }
+                    @if (counter2 == 0)
+                    {
+                        <tr><td>No ongoing assignments</td><td></td></tr>
+                    }
+
+                </tbody>
+            </table>
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+                    <tr><th>CANCELED TASKS</th></tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Change status</th>
+                        <th>Deadline</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.tasks)
+                    {
+                        if (item.status[0] == "canceled")
+                        {
+                            counter3++;
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                    </details>
+                                </td>
+
+                                <td>@item.status[0]</td>
+                                <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                                <td>
+                                    @if (item.time_limit != null)
+                                    {
+                                        @item.time_limit.ToString("dd/MM/yyyy")
+                                    }
+                            </td>
+
+                            </tr>
+
+                        }
+                    }
+                    @if (counter3 == 0)
+                    {
+                        <tr><td>No canceled assignments</td><td></td></tr>
+                    }
+
+                </tbody>
+            </table>
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+                    <tr><th>COMPLETED TASKS</th></tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Change status</th>
+                        <th>Deadline</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.tasks)
+                    {
+                        if (item.status[0] == "completed")
+                        {
+                            counter4++;
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                    </details>
+                                </td>
+                                <td>@item.status[0]</td>
+                                <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                                <td>
+                                    @if (item.time_limit != null)
+                                    {
+                                        @item.time_limit.ToString("dd/MM/yyyy")
+                                    }
+                            </td>
+
+
+                            </tr>
+
+                        }
+                    }
+                    @if (counter4 == 0)
+                    {
+                        <tr><td>No pending assignments</td><td></td></tr>
+                    }
+
+                </tbody>
+            </table>
+
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+                    <tr><th>YOUR GROUPS</th></tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>No. of Workers</th>
+                        <th>Created</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Groups)
+                    {
+                        <tr>
+                            <th><a href="">@item.name</a></th>
+                            <th> @item.workers.Count</th>
+                            <th> @item.created_date</th>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        else if (Model.privilege[0] == "admin")
+        {
+
+
+            <table align="center" class="table  table-striped table-hover">
+                <thead>
+                    <tr><th>USERS</th></tr>
+                    <tr>
+
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>ID</th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.workers)
+                    {
+
+                        <tr>
+                            <th>@item.username</th>
+                            <th> @item.privilege[0]</th>
+                            <th> @item.email</th>
+                            <th> @item._id</th>
+
+                            <th>@Html.ActionLink("Edit", "EditUser", new { id = item._id })</th>
+                            <th>@Html.ActionLink("Delete", "DeleteUser", new { id = item._id })</th>
+                            <th>@Html.ActionLink("New Chat", "CreateChat", "Chat", new { user_id = item._id }, null)</th>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            <button onclick="location.href = '/Account/Register'" type="button" class="btn btn-primary">
+                CREATE NEW USER
+            </button>
+
+        }
+        else if (Model.privilege[0] == "manager")
+        {
+            <h2>GROUPS YOU ARE MANAGER IN</h2>
+            foreach (var item in Model.Groups)
+            {
+                <table align="center" class="table  table-striped table-hover">
+                    <thead>
+                        <tr><th>@item.name</th></tr>
+                        <tr>
+
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>ID</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item1 in item.Workers)
+                        {
+                            if (item1 != null)
+                            {
+                                <tr>
+                                    <th>@item1.username</th>
+                                    <th> @item1.privilege[0]</th>
+                                    <th> @item1.email</th>
+                                    <th> @item1._id</th>
+                                    <th><button type="button" class="btn btn-primary">REMOVE</button></th>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            <h2>CREATED TASKS</h2>
+            <table align="center" class="table table-striped table-hover">
+                <thead>
+
+                    <tr>
+                        <th>@Html.ActionLink("NAME", "SortByName", new { id = Model._id })</th>
+                        <th>@Html.ActionLink("PRIORITY", "SortByPriority", new { id = Model._id })</th>
+                        <th>Assigned to</th>
+
+                        <th>@Html.ActionLink("STATUS", "SortByStatus", new { id = Model._id })</th>
+                        <th>ASSIGN</th>
+                        <th>CHANGE STATUS</th>
+                        <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.tasks)
+                    {
+                        if (item.assigned_to_worker != null && item.assigned_to_worker != "")
+                        {
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                        <div>@Html.ActionLink("Assign", "Assign", new { id = item._id })</div>
+                                    </details>
+                                </td>
+                                <td>@item.priority</td>
+                                <td>
+                                    @item.assigned_to_workerName
+                                </td>
+
+
+                                <td>@item.status[0]</td>
+                                <td>
+                                @if(item.status[0]=="pending"){
+                                    @Html.ActionLink("DECLINE", "Decline", new { id = item._id })
+                                }
+                                else
+                                {
+                                @Html.ActionLink("Assign", "Assign", new { id = item._id })
+                                }
+
+                              </td>
+                                <td>
+                                    @if (item.status[0] == "pending")
+                                    {
+                                        @Html.ActionLink("ACCEPT", "Accept", new { id = item._id })}
+                                    else
+                                    {
+                                        @Html.ActionLink("Change status", "Evaluate", new { id = item._id })}
+
+    </td>
+                                <td>
+                                @if (item.time_limit != null) {
+                                    @item.time_limit.ToString("dd/MM/yyyy")
+                                }</td>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    @item.name<details>
+                                        <summary>Details</summary>
+                                        <p>Creation date: @item.created_date</p>
+                                        <p>Description: @item.description</p>
+                                        <p>Status: @item.status[0]</p>
+                                        <div>@Html.ActionLink("Assign", "Assign", new { id = item._id })</div>
+
+
+
+
+
+                                    </details>
+
+                                </td>
+                                <td>@item.priority</td>
+                                <td>
+                                    UNASSIGNED
+                                    <!--   <button type="button" class="btn btn-primary">ASSIGN</button>
+
+                                             <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                             <div id="myDropdown" class="dropdown-content">
+                                                 <p>Home</p>
+                                                 <p>About</p>
+                                                 <p>Contact</p>
+                                             </div>
+
+                                    -->
+                                </td>
+                                <td>@item.status[0]</td>
+                                <td>@Html.ActionLink("Assign", "Assign", new { id = item._id })</td>
+                                <td>@Html.ActionLink("Change status", "Evaluate", new { id = item._id })</td>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+
+        }
+    }
+
+    <!--
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Getting started</h2>
+            <p>
+                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+                enables a clean separation of concerns and gives you full control over markup
+                for enjoyable, agile development.
+            </p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Get more libraries</h2>
+            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Web Hosting</h2>
+            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        </div>
+    </div>
+        -->
+*@
