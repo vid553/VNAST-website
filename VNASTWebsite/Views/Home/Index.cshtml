@@ -22,6 +22,7 @@
                     <th>Change status</th>
                     <th>@Html.ActionLink("TIME LIMIT", "SortByTimeLimit", new { id = Model._id })</th>
 
+                   
                 </tr>
             </thead>
             <tbody>
@@ -90,11 +91,18 @@
                         <tr>
                             <td>
                                 @item.name<details>
-                                    <summary>Details</summary>
+                                              <summary>Details @if (item.documents.Count > 1)
+                                              {<b>[This assignment has files]</b>}</summary>
                                     <p>Creation date: @item.created_date</p>
                                     <p>Description: @item.description</p>
                                     <p>Status: @item.status[0]</p>
-
+                                 @foreach (var doc in item.documents)
+       
+    {
+        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid=doc._id, path=doc.path, mime=doc.mimetype, orgname=doc.originalname }) 
+      
+        <br />
+    }
                                 </details>
                                 </td>
                             <td>@item.status[0]</td>
@@ -138,11 +146,19 @@
                         <tr>
                             <td>
                                 @Html.ActionLink("NAME", "SortByName", new { id = Model._id })<details>
-                                    <summary>Details</summary>
-                                    <p>Creation date: @item.created_date</p>
-                                    <p>Description: @item.description</p>
-                                    <p>Status: @item.status[0]</p>
-                                </details>
+                                                                                                  <summary>Details @if (item.documents.Count > 1)
+                                                                                                  {<b>[This assignment has files]</b>}</summary>
+    <p>Creation date: @item.created_date</p>
+    <p>Description: @item.description</p>
+    <p>Status: @item.status[0]</p>
+    @foreach (var doc in item.documents)
+
+    {
+        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid = doc._id, path = doc.path, mime = doc.mimetype, orgname = doc.originalname })
+
+        <br />
+    }
+</details>
                             </td>
                            
                             <td>@item.status[0]</td>
@@ -184,11 +200,20 @@
                         counter4++;
                         <tr>
                             <td>
-                                @Html.ActionLink("NAME", "SortByName", new { id = Model._id })<details>
-                                    <summary>Details</summary>
+                               
+                                <details>
+                                    <summary>Details @if (item.documents.Count > 1)
+                                    {<b>[This assignment has files]</b>}</summary>
                                     <p>Creation date: @item.created_date</p>
                                     <p>Description: @item.description</p>
                                     <p>Status: @item.status[0]</p>
+                                    @foreach (var doc in item.documents)
+
+                                    {
+                                        @Html.ActionLink("Download attachment", "Download", new { taskid = item._id, fileid = doc._id, path = doc.path, mime = doc.mimetype, orgname = doc.originalname })
+
+                                        <br />
+                                    }
                                 </details>
                             </td>
                             <td>@item.status[0]</td>

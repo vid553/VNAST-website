@@ -378,7 +378,7 @@ namespace VNASTWebsite.Controllers
             sortBy = "time_limit";
             return RedirectToAction("Index");
         }
-        public ActionResult Download(string taskid, string fileid, string path, string mime, string orgname)
+        public RedirectResult Download(string taskid, string fileid, string path, string mime, string orgname)
         {
             try
             {
@@ -392,10 +392,10 @@ namespace VNASTWebsite.Controllers
                
               
            
-                myWebClient.DownloadFile(url, orgname);
+         //       myWebClient.DownloadFile(url, orgname);
+                return new RedirectResult(url);
 
-
-                return RedirectToAction("Index");
+              //  return RedirectToAction("Index");
             
             }
             catch (IOException e) {// return View("Error");

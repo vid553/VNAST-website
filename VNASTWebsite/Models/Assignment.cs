@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-
+using System.IO;
 namespace VNASTWebsite.Models
 {
     public class Assignment
@@ -26,7 +26,7 @@ namespace VNASTWebsite.Models
         }*/
         public string priority { get; set; }
         public List<string> status { get; set; }
-        public List<object> documents { get; set; }
+        public List<Document> documents { get; set; }
         public string created_date { get; set; }
         public string _id { get; set; }
 
@@ -45,6 +45,7 @@ namespace VNASTWebsite.Models
         public string created_by { get; set; }
         public string assigned_to_group { get; set; }
         public DateTime? time_limit { get; set; }
-        public List<User> potentialWorkers { get; set; }        
+        public List<User> potentialWorkers { get; set; }
+        public string filename { get; set; }
     }
 }
