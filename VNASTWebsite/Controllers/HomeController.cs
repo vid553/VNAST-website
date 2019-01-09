@@ -5,7 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using VNASTWebsite.Models;
 using Newtonsoft.Json;
-
+using System.IO;
+using System.Net;
 namespace VNASTWebsite.Controllers
 {
     [Authorize]
@@ -42,6 +43,26 @@ namespace VNASTWebsite.Controllers
                     var userGroups = JsonConvert.DeserializeObject<List<Group>>(get_userGroup);
                     currentUser.tasks = userTasks;
                     currentUser.Groups = userGroups;
+                    if (sortBy != null)
+                    {
+                        switch (sortBy)
+                        {
+                            case "priority":
+                                currentUser.tasks = currentUser.tasks.OrderByDescending(x => x.priority.Length).ThenBy(x => x.priority == null).ThenBy(x => x.priority).ToList();
+                                break;
+                            case "status":
+                                currentUser.tasks = currentUser.tasks.OrderBy(x => x.status[0]).ToList();
+                                break;
+                            case "time_limit":
+                                currentUser.tasks = currentUser.tasks.OrderBy(x => x.time_limit).ToList();
+                                break;
+                            case "name":
+                                currentUser.tasks = currentUser.tasks.OrderBy(x => x.name).ToList();
+                                break;
+                            default: break;
+                        }
+                    }
+                    
                     return View(currentUser);
                 }
                 else if (currentUser.privilege[0] == "manager")
@@ -260,19 +281,39 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult Evaluate(string id)
         {
-
-            string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
-            var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
-            var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
-            string get_users = AccountController.apiRequestController.RequestGet("users");
-            var users = JsonConvert.DeserializeObject<List<User>>(get_users);
-            assignmentToEdit.potentialWorkers = users;
-            return View(assignmentToEdit);
+            try
+            {
+                string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
+                var assignments = JsonConvert.DeserializeObject<List<Models.Assignment>>(get_assignments);
+                var assignmentToEdit = assignments.Where(s => s._id == id).FirstOrDefault();
+                string get_users = AccountController.apiRequestController.RequestGet("users");
+                var users = JsonConvert.DeserializeObject<List<User>>(get_users);
+                assignmentToEdit.potentialWorkers = users;
+                return View(assignmentToEdit);
+            }
+            catch { return View("Error"); }
         }
 
         [HttpPost]
         public ActionResult Evaluate(Models.Assignment assignment)
         {
+            
+            
+            if (assignment.filename != null)
+            {
+                Document d = new Document();
+                d.originalname = assignment.filename;
+                d.filename = assignment.filename;
+                d.path = "uploads/" + d.filename;
+                
+                string mimeType = MimeMapping.GetMimeMapping(assignment.filename);
+                d.mimetype = mimeType;
+                if (assignment.documents == null)
+                {
+                    assignment.documents = new List<Document>();
+                }
+                assignment.documents.Add(d);
+            }
             bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignment);
             if (update_data)
             {
@@ -352,5 +393,32 @@ namespace VNASTWebsite.Controllers
             sortBy = "time_limit";
             return RedirectToAction("Index");
         }
+        public RedirectResult Download(string taskid, string fileid, string path, string mime, string orgname)
+        {
+            try
+            {
+                string url= "http://13.80.47.169:3000/tasks/"+taskid+"/files/"+fileid;
+
+
+                string remoteUri = url;
+                string fileName = orgname;
+                
+                WebClient myWebClient = new WebClient();
+               
+              
+           
+         //       myWebClient.DownloadFile(url, orgname);
+                return new RedirectResult(url);
+
+              //  return RedirectToAction("Index");
+            
+            }
+            catch (IOException e) {// return View("Error");
+            }
+            // return RedirectToAction("Index");
+            return null;
+        }
+
     }
+
 }
