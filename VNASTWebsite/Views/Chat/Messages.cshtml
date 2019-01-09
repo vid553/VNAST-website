@@ -8,25 +8,36 @@
 <h2>Messages</h2>
 @if (Model != null)
 {
-    <table align="center" class="table table-striped">
-        <thead>
-            <tr class="info">
-                <th>Time</th>
-                <th>Send by</th>
-                <th>Text</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+    var current = "";
+    var prev = "";
+
+<div class="container">
+    <div class="panel panel-success">
+        @foreach (var item in Model)
+        {
+
+            current = item.created_by;
+            if (current != prev)
             {
-                <tr>
-                    <td>@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</td>
-                    <td>@item.created_by</td>
-                    <td>@item.content</td>
-                </tr>
+
+                <div class="panel-heading" style="font-size: 120%;">@item.created_by:</div>
+                <div class="panel-body well-sm" style="max-height: 40px;"><span>@item.content</span><span class="pull-right" style="font-size: 80%;">@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</span></div>
+
             }
-        </tbody>
-    </table>
+
+            else
+            {
+                <div class="panel-body well-sm" style="max-height: 40px;"><span>@item.content</span><span class="pull-right" style="font-size: 80%;">@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</span></div>
+
+
+            }
+            prev = current;
+
+        }
+     </div>  
+</div>
+
+
 
     using (Html.BeginForm("SendMessage", "Chat"))
     {
