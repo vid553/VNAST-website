@@ -11,5 +11,6 @@ namespace VNASTWebsite.Models
         public List<string> messages_ids { get; set; }
         public string _id { get; set; }
         public string created_date { get; set; }
+        public string assigned_to_group { get; set; }
     }
 }

@@ -72,19 +72,24 @@ namespace VNASTWebsite.Controllers
         // GET: Display messages in chat
         public ActionResult ShowChat(string id)
         {
-            string get_messages = AccountController.apiRequestController.RequestGet("chats/" + id);
-            var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
-            List<Message> updated_messages = new List<Message>();
-            foreach (Message message in messages)
+            try
             {
-                string created_by_id = message.created_by;
-                string get_user = AccountController.apiRequestController.RequestGet("users/" + created_by_id);
-                var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
-                message.created_by = user.username;
-                updated_messages.Add(message);
+                string get_messages = AccountController.apiRequestController.RequestGet("chats/" + id);
+                var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
+                List<Message> updated_messages = new List<Message>();
+                foreach (Message message in messages)
+                {
+                    string created_by_id = message.created_by;
+                    string get_user = AccountController.apiRequestController.RequestGet("users/" + created_by_id);
+                    var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                    message.created_by = user.username;
+                    updated_messages.Add(message);
+                }
+                ViewBag.Message = "Chat name";
+                Response.AddHeader("Refresh", "5");
+                return View("Messages", messages);
             }
-            ViewBag.Message = "Chat name";
-            return View("Messages", messages);
+            catch { return View(); }
         }
 
         public ActionResult CreateChat(string user_id)

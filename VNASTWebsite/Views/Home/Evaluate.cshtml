@@ -5,8 +5,9 @@
 
 <h2>Evaluate</h2>
 
-@using (Html.BeginForm())
-{@Html.AntiForgeryToken()
+@using (Html.BeginForm("Evaluate", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
 <hr />
 @Html.ValidationSummary("", new { @class = "text-danger" })
 <div class="form-group">
@@ -78,15 +79,19 @@
         @Html.ValidationMessageFor(m => m.assigned_to_worker, "", new { @class = "text-danger" }) *@
         <br />
         <br />
-       
-  
-        <br />
-        <label for="file">Upload file:</label>
-        <!--  <input type="file" name="file" id="file" /><br><br>
-    -->
-        @Html.TextBoxFor(model => model.filename, null, new { type = "file", @class = "input-file" })
-        <br><br>
 
+
+        <br />
+        <form action="" method="post" enctype="multipart/form-data">
+
+            <label for="file1">Filename:</label>
+            <input type="file" name="files" id="file1" />
+
+            <label for="file2">Filename:</label>
+            <input type="file" name="files" id="file2" />
+
+            <input type="submit" />
+        </form>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

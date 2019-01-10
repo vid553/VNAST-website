@@ -184,6 +184,37 @@ namespace VNASTWebsite.Controllers
             return View();
         }
 
+        public ActionResult GroupChat(string id)
+        {
+            string get_my_group_chats = AccountController.apiRequestController.RequestGet("groups/" + id + "/chats");
+            var chats = JsonConvert.DeserializeObject<List<Chat>>(get_my_group_chats);
+            ViewBag.List = chats;
+            return View();
+        }
+
+        // GET: Display messages in group chat
+        public ActionResult ShowGroupChat(string id, string id2)
+        {
+            try
+            {
+                string get_messages = AccountController.apiRequestController.RequestGet("/groups" + id +"/chats/" + id2);
+                var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
+                List<Message> updated_messages = new List<Message>();
+                foreach (Message message in messages)
+                {
+                    string created_by_id = message.created_by;
+                    string get_user = AccountController.apiRequestController.RequestGet("users/" + created_by_id);
+                    var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                    message.created_by = user.username;
+                    updated_messages.Add(message);
+                }
+                ViewBag.Message = "Chat name";
+                Response.AddHeader("Refresh", "5");
+                return View("Messages", messages);
+            }
+            catch { return View(); }
+        }
+
         public ActionResult EditUser(string id)
         {
             try
@@ -295,24 +326,53 @@ namespace VNASTWebsite.Controllers
         }
 
         [HttpPost]
-        public ActionResult Evaluate(Models.Assignment assignment)
+        public ActionResult Evaluate(Models.Assignment assignment, IEnumerable<HttpPostedFileBase> files)
         {
-            
-            
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    if (file.ContentLength > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var path = Path.Combine(Server.MapPath("~/"), fileName);
+                        file.SaveAs(path);
+                        WebClient myWebClient = new WebClient();
+                        myWebClient.Headers.Add("x-access-token",APIController.userToken);
+                       // myWebClient.Headers.Add("User-Agent: Other");
+                       // myWebClient.UseDefaultCredentials = true;
+             
+                        byte[] responseArray = myWebClient.UploadFile("http://13.80.47.169:3000/tasks/" + assignment._id + "/files", "POST", path);
+                    }
+                }
+            }
+
+
             if (assignment.filename != null)
             {
                 Document d = new Document();
                 d.originalname = assignment.filename;
                 d.filename = assignment.filename;
-                d.path = "uploads/" + d.filename;
-                
+                d.path = d.filename;
+
                 string mimeType = MimeMapping.GetMimeMapping(assignment.filename);
                 d.mimetype = mimeType;
                 if (assignment.documents == null)
                 {
                     assignment.documents = new List<Document>();
                 }
-                assignment.documents.Add(d);
+                // assignment.documents.Add(d);
+
+
+                WebClient myWebClient = new WebClient();
+
+
+
+                // Console.WriteLine("Uploading {0} to {1} ...", d.originalname, uriString);
+                // Upload the file to the URL using the HTTP 1.0 POST.
+
+             //   byte[] responseArray = myWebClient.UploadFile("/tasks/" + assignment._id + "/files", "POST", d.originalname);
+
             }
             bool update_data = AccountController.apiRequestController.EditAssignmentRequest(assignment);
             if (update_data)
@@ -343,7 +403,7 @@ namespace VNASTWebsite.Controllers
             {
                 return View("Error");
             }
-           
+
         }
         public ActionResult Decline(string id)
         {
@@ -405,17 +465,13 @@ namespace VNASTWebsite.Controllers
                 
                 WebClient myWebClient = new WebClient();
                
-              
-           
-         //       myWebClient.DownloadFile(url, orgname);
                 return new RedirectResult(url);
 
-              //  return RedirectToAction("Index");
             
             }
             catch (IOException e) {// return View("Error");
             }
-            // return RedirectToAction("Index");
+            
             return null;
         }
 
