@@ -188,7 +188,22 @@ namespace VNASTWebsite.Controllers
         {
             string get_my_group_chats = AccountController.apiRequestController.RequestGet("groups/" + id + "/chats");
             var chats = JsonConvert.DeserializeObject<List<Chat>>(get_my_group_chats);
-            ViewBag.List = chats;
+
+
+            List<Chat> new_my_chats = new List<Chat>();
+            foreach (Chat chat in chats)
+            {
+                List<string> created_by_names = new List<string>();
+                foreach (string id2 in chat.participants)
+                {
+                    string get_user = AccountController.apiRequestController.RequestGet("users/" + id2);
+                    var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                    created_by_names.Add(user.username);
+                }
+                chat.participants = created_by_names;
+                new_my_chats.Add(chat);
+            }
+            ViewBag.List = new_my_chats;
             return View();
         }
 
@@ -197,7 +212,7 @@ namespace VNASTWebsite.Controllers
         {
             try
             {
-                string get_messages = AccountController.apiRequestController.RequestGet("/groups" + id +"/chats/" + id2);
+                string get_messages = AccountController.apiRequestController.RequestGet("groups/" + id +"/chats/" + id2);
                 var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
                 List<Message> updated_messages = new List<Message>();
                 foreach (Message message in messages)
