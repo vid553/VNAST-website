@@ -338,7 +338,7 @@ namespace VNASTWebsite.Controllers
                         var path = Path.Combine(Server.MapPath("~/"), fileName);
                         file.SaveAs(path);
                         WebClient myWebClient = new WebClient();
-                        myWebClient.Headers.Add("x-access-token",APIController.userToken);
+                        //myWebClient.Headers.Add("x-access-token",APIController.userToken);
                        // myWebClient.Headers.Add("User-Agent: Other");
                        // myWebClient.UseDefaultCredentials = true;
              
