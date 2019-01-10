@@ -184,6 +184,37 @@ namespace VNASTWebsite.Controllers
             return View();
         }
 
+        public ActionResult GroupChat(string id)
+        {
+            string get_my_group_chats = AccountController.apiRequestController.RequestGet("groups/" + id + "/chats");
+            var chats = JsonConvert.DeserializeObject<List<Chat>>(get_my_group_chats);
+            ViewBag.List = chats;
+            return View();
+        }
+
+        // GET: Display messages in group chat
+        public ActionResult ShowGroupChat(string id, string id2)
+        {
+            try
+            {
+                string get_messages = AccountController.apiRequestController.RequestGet("/groups" + id +"/chats/" + id2);
+                var messages = JsonConvert.DeserializeObject<List<Message>>(get_messages);
+                List<Message> updated_messages = new List<Message>();
+                foreach (Message message in messages)
+                {
+                    string created_by_id = message.created_by;
+                    string get_user = AccountController.apiRequestController.RequestGet("users/" + created_by_id);
+                    var user = JsonConvert.DeserializeObject<User>(get_user.TrimStart('[').TrimEnd(']'));
+                    message.created_by = user.username;
+                    updated_messages.Add(message);
+                }
+                ViewBag.Message = "Chat name";
+                Response.AddHeader("Refresh", "5");
+                return View("Messages", messages);
+            }
+            catch { return View(); }
+        }
+
         public ActionResult EditUser(string id)
         {
             try

@@ -132,6 +132,7 @@
                     <th><h3>Name</h3></th>
                     <th><h3>No. of Workers</h3></th>
                     <th><h3>Created</h3></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -141,6 +142,7 @@
                         <th><a href="">@item.name</a></th>
                         <th> @item.workers.Count</th>
                         <th> @item.created_date</th>
+                        <th>@Html.ActionLink("Open group chats", "GroupChat", new { id = item._id })</th>
                     </tr>
                 }
             </tbody>
@@ -189,33 +191,34 @@
         <h1>GROUPS YOU ARE MANAGER IN</h1>
         foreach (var item in Model.Groups)
         {
-            <table align="center" class="table  table-striped table-hover">
-                <thead>
-                    <tr><th>@item.name</th></tr>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Email</th>
-                        <th>ID</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item1 in item.Workers)
+        <table align="center" class="table  table-striped table-hover">
+            <thead>
+                <tr><th>@item.name</th></tr>
+                <tr><th>@Html.ActionLink("Open group chats", "GroupChat", new { id = item._id })</th></tr>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>ID</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var item1 in item.Workers)
+                {
+                    if (item1 != null)
                     {
-                        if (item1 != null)
-                        {
-                            <tr>
-                                <th>@item1.username</th>
-                                <th> @item1.privilege[0]</th>
-                                <th> @item1.email</th>
-                                <th> @item1._id</th>
-                                <th><button type="button" class="btn btn-primary">REMOVE</button></th>
-                            </tr>
-                        }
+                        <tr>
+                            <th>@item1.username</th>
+                            <th> @item1.privilege[0]</th>
+                            <th> @item1.email</th>
+                            <th> @item1._id</th>
+                            <th><button type="button" class="btn btn-primary">REMOVE</button></th>
+                        </tr>
                     }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
         }
         <h1>CREATED TASKS</h1>
         <table align="center" class="table table-striped table-hover">
