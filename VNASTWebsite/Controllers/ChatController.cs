@@ -84,6 +84,7 @@ namespace VNASTWebsite.Controllers
                 updated_messages.Add(message);
             }
             ViewBag.Message = "Chat name";
+            Response.AddHeader("Refresh", "5");
             return View("Messages", messages);
         }
 

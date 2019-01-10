@@ -23,11 +23,12 @@ namespace VNASTWebsite.Controllers
         public AccountController()
         {
             apiRequestController = new APIController();
-            bool post_login = apiRequestController.LoginRequest("admin", "admin");
+            /*bool post_login = apiRequestController.LoginRequest("admin", "admin");
             if (post_login)
             {
                 string get_user = apiRequestController.RequestGet("me");
             }
+            */
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
