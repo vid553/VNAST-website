@@ -347,6 +347,7 @@ namespace VNASTWebsite.Controllers
             {
                 foreach (var file in files)
                 {
+                    if (file != null) { 
                     if (file.ContentLength > 0)
                     {
                         var fileName = Path.GetFileName(file.FileName);
@@ -358,6 +359,7 @@ namespace VNASTWebsite.Controllers
                        // myWebClient.UseDefaultCredentials = true;
              
                         byte[] responseArray = myWebClient.UploadFile("http://13.80.47.169:3000/tasks/" + assignment._id + "/files", "POST", path);
+                    }
                     }
                 }
             }
