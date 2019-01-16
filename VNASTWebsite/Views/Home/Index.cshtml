@@ -232,7 +232,7 @@
         {
             <table align="center" class="table  table-striped table-hover">
                 <thead>
-                    <tr><th>@item.name</th></tr>
+                    <tr><th>@item.name</th><th>@Html.ActionLink("Show group chat", "GroupChat", new {id = item._id })</th></tr>
                     <tr>
                         <th>Username</th>
                         <th>Role</th>
