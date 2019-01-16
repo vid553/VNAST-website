@@ -97,7 +97,7 @@
                         <td>@item.priority</td>
                         <td>@item.status[0]</td>
                         <td>
-                            @item.name @if (item.documents.Count > 1) { <b>[This assignment contains files]</b> }
+                            @item.name @if (item.documents.Count > 0) { <b>[This assignment contains files]</b> }
                         </td>
                         <td class="@if (item.time_limit != null && item.time_limit < DateTime.Now) // zamujeno
                         {
