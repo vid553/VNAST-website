@@ -332,17 +332,20 @@ namespace VNASTWebsite.Controllers
             {
                 foreach (var file in files)
                 {
-                    if (file.ContentLength > 0)
+                    if (file != null)
                     {
-                        var fileName = Path.GetFileName(file.FileName);
-                        var path = Path.Combine(Server.MapPath("~/"), fileName);
-                        file.SaveAs(path);
-                        WebClient myWebClient = new WebClient();
-                        myWebClient.Headers.Add("x-access-token",APIController.userToken);
-                       // myWebClient.Headers.Add("User-Agent: Other");
-                       // myWebClient.UseDefaultCredentials = true;
-             
-                        byte[] responseArray = myWebClient.UploadFile("http://13.80.47.169:3000/tasks/" + assignment._id + "/files", "POST", path);
+                        if (file.ContentLength > 0)
+                        {
+                            var fileName = Path.GetFileName(file.FileName);
+                            var path = Path.Combine(Server.MapPath("~/"), fileName);
+                            file.SaveAs(path);
+                            WebClient myWebClient = new WebClient();
+                            //  myWebClient.Headers.Add("x-access-token",APIController.userToken);
+                            // myWebClient.Headers.Add("User-Agent: Other");
+                            //  myWebClient.UseDefaultCredentials = false;
+
+                            byte[] responseArray = myWebClient.UploadFile("http://13.80.47.169:3000/tasks/" + assignment._id + "/files", "POST", path);
+                        }
                     }
                 }
             }

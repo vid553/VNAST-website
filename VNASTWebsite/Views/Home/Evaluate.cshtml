@@ -11,14 +11,15 @@
 <hr />
 @Html.ValidationSummary("", new { @class = "text-danger" })
 <div class="form-group">
-    @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
-    <div class="col-md-10">
-        @Html.TextBoxFor(m => m.priority)
-             @Html.ValidationMessageFor(m => m.priority, "", new { @class = "text-danger" })
-    </div>
-</div>
-<div class="form-group">
-    @*  @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })*@
+    @*   @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })*@
+            <div class="col-md-10">
+                Priority:
+                @Html.TextBoxFor(m => m.priority)
+                     @Html.ValidationMessageFor(m => m.priority, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @*  @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })*@
     <div class="col-md-10">
         @Html.HiddenFor(m => m.status[0])
         @*   @Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })*@
@@ -90,7 +91,7 @@
             <label for="file2">Filename:</label>
             <input type="file" name="files" id="file2" />
 
-            <input type="submit" />
+          
         </form>
 
         <div class="form-group">
