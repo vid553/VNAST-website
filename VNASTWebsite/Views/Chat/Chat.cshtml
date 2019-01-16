@@ -7,67 +7,60 @@
 {
     if (Model.privilege[0] != "worker")
     {
-        <h3 class="text-success">All Chats</h3>
-        <table align="center" class="table table-striped">
-            <thead>
-                <tr class="info">
-                    <th>Participants</th>
-                    <th>Created date</th>
-                    <th>Chat ID</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.all_chats)
-                {
-                    <tr>
-                        <td>
-                            @for (int i = 0; i < item.participants.Count; i++)
-                            {
-                                <div>@item.participants[i]</div>
-                            }
-                        </td>
-                        <td>@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</td>
-                        <td>@item._id</td>
-                        <td>@Html.ActionLink("Open Chat", "ShowChat", new { id = item._id })</td>
-                        <td>@Html.ActionLink("Delete", "DeleteChat", new { id = item._id })</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <h2 class="text-success">All chats</h2>
+
+        <div class="container">
+
+            @foreach (var item in Model.my_chats)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="font-size: 120%;">
+
+                        @for (int i = 0; i < item.participants.Count; i++)
+                        {
+                            if (Model.username != item.participants[i])
+                            {<p style="font-size: 120%;">@item.participants[i]</p>}
+                    }
+
+                        <a class="btn btn-primary" href="/Chat/ShowChat/@item._id" role="button">Open Chat</a>
+                        <a class="btn btn-danger" href="/Chat/DeleteChat/@item._id" role="button">Delete Chat</a>
+                    </div>
+                    <div class="panel-body">
+                        <span>Chat ID: @item._id</span>
+                        <span class="pull-right">Created on: @Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</span>
+                    </div>
+                </div>
+            }
+
+        </div>
     }
     else
     {
         <h2 class="text-success">My Chats</h2>
 
-        <table align="center" class="table table-striped">
-            <thead>
-                <tr class="info">
-                    <th>Participants</th>
-                    <th>Created date</th>
-                    <th>Chat ID</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.my_chats)
-                {
-                    <tr>
-                        <td>
-                            @for (int i = 0; i < item.participants.Count; i++)
-                            {
-                                <div>@item.participants[i]</div>
-                            }
-                        </td>
-                        <td>@Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</td>
-                        <td>@item._id</td>
-                        <td>@Html.ActionLink("Open Chat", "ShowChat", new { id = item._id })</td>
-                        <td>@Html.ActionLink("Delete", "DeleteChat", new { id = item._id })</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="container">
+
+            @foreach (var item in Model.my_chats)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="font-size: 120%;">
+
+                        @for (int i = 0; i < item.participants.Count; i++)
+                        {
+                            if (Model.username != item.participants[i])
+                            {<p style="font-size: 120%;">@item.participants[i]</p>}
+                    }
+
+                        <a class="btn btn-primary" href="/Chat/ShowChat/@item._id" role="button">Open Chat</a>
+                        <a class="btn btn-danger" href="/Chat/DeleteChat/@item._id" role="button">Delete Chat</a>
+                    </div>
+                    <div class="panel-body">
+                        <span class="pull-right">Created on: @Convert.ToDateTime(item.created_date).ToString("dd/MM/yyyy hh:mm:ss")</span>
+                    </div>
+                </div>
+            }
+
+        </div>
+
     }
 }
