@@ -16,17 +16,11 @@ namespace VNASTWebsite.Controllers
         public static string sortBy { get; set; }
         public ActionResult Index()
         {
-            //   APIController api = AccountController.apiRequestController;
-            //   string json = api.RequestGet("/me");
             try
             {
                 string get_currentUser = AccountController.apiRequestController.RequestGet("me");
                 var currentUser = JsonConvert.DeserializeObject<User>(get_currentUser);
 
-                //if (post_login)
-                //{
-                //    string get_user = apiRequestController.RequestGet("me");
-                //}
                 int c = 0;
                 if (currentUser.privilege[0] == "admin")
                 {
