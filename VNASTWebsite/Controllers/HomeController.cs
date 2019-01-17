@@ -264,7 +264,6 @@ namespace VNASTWebsite.Controllers
 
         public ActionResult DeleteUser(string id)
         {
-            /*
             bool delete_user = AccountController.apiRequestController.RequestDelete("users/" + id);
             if (delete_user)
             {
@@ -274,8 +273,6 @@ namespace VNASTWebsite.Controllers
             {
                 return View("Error");
             }
-            */
-            return RedirectToAction("Index");
         }
         public ActionResult Assign(string id)
         {

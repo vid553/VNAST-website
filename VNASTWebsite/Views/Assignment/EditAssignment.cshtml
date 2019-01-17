@@ -7,48 +7,55 @@
 
 <h2>EditAssignment</h2>
 
-<div class="row">
-    <div class="col-md-8">
+<div>
+    <div class="container">
         @using (Html.BeginForm())
         {
+            @Html.Hidden("_id", Model._id)
             @Html.AntiForgeryToken()
             <hr />
             @Html.ValidationSummary("", new { @class = "text-danger" })
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
+
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.priority, new { @class = "col-md-2 control-label" })
+                </div>
                 <div class="col-md-10">
                     @Html.EditorFor(m => m.priority, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.priority, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
+            <br />
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.status, new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-md-10">
                     @Html.EditorFor(m => m.status, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
-                    @Html.EditorFor(m => m.created_date, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.created_date, "", new { @class = "text-danger" })
+            <br />
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.created_date, new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-md-10">
+                    @Convert.ToDateTime(Model.created_date).ToString("dd/MM/yyyy HH:mm:ss")
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
-                    @Html.EditorFor(m => m._id, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m._id, "", new { @class = "text-danger" })
+            <br />
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })
                 </div>
-            </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.name, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-10">
                     @Html.EditorFor(m => m.name, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.name, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <br />
+            @*
             <div class="col-md-offset-2 form-group">
                 @Html.LabelFor(m => m.created_by, new { @class = "col-md-2 control-label" })
                 <div class="col-md-offset-2 col-md-10">
@@ -56,20 +63,24 @@
                     @Html.ValidationMessageFor(m => m.created_by, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
+            *@
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.description, new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-md-10">
                     @Html.TextBoxFor(m => m.description, new { @class = "form-control" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                <div class="col-md-offset-2 col-md-offset-2 col-md-10">
+            <br />
+            <div class="form-group">
+                <div class="col-md-offset-2">
                     <input type="submit" class="btn btn-default" value="Save" />
                 </div>
             </div>
         }
     </div>
-</div>
+     </div>
 <div>
     @Html.ActionLink("Back to List", "Assignments")
 </div>

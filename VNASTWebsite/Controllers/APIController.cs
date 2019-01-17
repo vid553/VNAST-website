@@ -70,7 +70,7 @@ namespace VNASTWebsite.Controllers
         }
 
         // POST: Register new user
-        public bool RegisterRequest(string username, string password, string privilege = "", string email = "")
+        public bool RegisterRequest(string username, string password, string privilege, string email)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
                 .Create(serverUrl + "register");
@@ -79,8 +79,8 @@ namespace VNASTWebsite.Controllers
             webRequest.Accept = "application/json";
             using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
             {
-                Func<string, string> f = s => string.IsNullOrEmpty(s) ? string.Empty : string.Format("{0},", s);
-                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\",\"privilege\":\"{2}\",\"email\":\"{3}\"}}", f(username), f(password), f(privilege), f(email));
+                //Func<string, string> f = s => string.IsNullOrEmpty(s) ? string.Empty : string.Format("{0},", s);
+                string requestBody = string.Format("{{\"username\":\"{0}\",\"password\":\"{1}\",\"privilege\":\"{2}\",\"email\":\"{3}\"}}", username, password, privilege, email);
                 streamWriter.Write(requestBody);
                 streamWriter.Close();
             }
@@ -108,7 +108,7 @@ namespace VNASTWebsite.Controllers
             return true;
         }
 
-        // POST add assignment
+        // POST: add assignment
         public bool AddAssignmentRequest(Models.Assignment assignment)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest
@@ -300,6 +300,8 @@ namespace VNASTWebsite.Controllers
                 JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
                 serializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 string requestBody = JsonConvert.SerializeObject(user, serializerSettings);
+                requestBody = requestBody.Replace('[', ' ');
+                requestBody = requestBody.Replace(']', ' ');
                 streamWriter.Write(requestBody);
                 streamWriter.Close();
             }

@@ -6,44 +6,65 @@
 }
 
 <h2>Edit Seleted User</h2>
-<div class="row">
-    <div class="col-md-8">
+<div>
+    <div class="container">
         @using (Html.BeginForm())
         {
+            @Html.Hidden("_id", Model._id)
             @Html.AntiForgeryToken()
             <hr />
             @Html.ValidationSummary("", new { @class = "text-danger" })
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m._id, new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    @Html.EditorFor(m => m._id, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m._id, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.username, new { @class = "col-md-2 control-label" })
                 </div>
-            </div>
-
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.username, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-10">
                     @Html.EditorFor(m => m.username, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.username, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.email, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.email, new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-md-10">
                     @Html.EditorFor(m => m.email, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-offset-2 form-group">
-                @Html.LabelFor(m => m.privilege, new { @class = "col-md-2 control-label" })
-                <div class="col-md-offset-2 col-md-10">
-                    @Html.RadioButtonFor(m => m.privilege, "admin", new { id = "admin" })
-                    @Html.Label("admin", "Admin")
-                    @Html.RadioButtonFor(m => m.privilege, "manager", new { id = "manager" })
-                    @Html.Label("manager", "Manager")
-                    @Html.RadioButtonFor(m => m.privilege, "worker", new { id = "worker" })
-                    @Html.Label("worker", "Worker")
+            <div class="row">
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.privilege, new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-md-10">
+                    @if (Model.privilege[0] == "admin")
+                    {
+                        @Html.RadioButtonFor(m => m.privilege, "admin", new { id = "admin", Checked = true })
+                        @Html.Label("admin", "Admin")
+                        @Html.RadioButtonFor(m => m.privilege, "manager", new { id = "manager" })
+                        @Html.Label("manager", "Manager")
+                        @Html.RadioButtonFor(m => m.privilege, "worker", new { id = "worker" })
+                        @Html.Label("worker", "Worker")
+                    }
+                    else if (Model.privilege[0] == "manager")
+                    {
+                        @Html.RadioButtonFor(m => m.privilege, "admin", new { id = "admin" })
+                        @Html.Label("admin", "Admin")
+                        @Html.RadioButtonFor(m => m.privilege, "manager", new { id = "manager", Checked = true })
+                        @Html.Label("manager", "Manager")
+                        @Html.RadioButtonFor(m => m.privilege, "worker", new { id = "worker" })
+                        @Html.Label("worker", "Worker")
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.privilege, "admin", new { id = "admin" })
+                        @Html.Label("admin", "Admin")
+                        @Html.RadioButtonFor(m => m.privilege, "manager", new { id = "manager" })
+                        @Html.Label("manager", "Manager")
+                        @Html.RadioButtonFor(m => m.privilege, "worker", new { id = "worker", Checked = true })
+                        @Html.Label("worker", "Worker")
+                    }
+
                 </div>
             </div>
             <div class="col-md-offset-2 form-group">
@@ -53,7 +74,7 @@
             </div>
         }
     </div>
-</div>
+        </div>
 
 <div>
     @Html.ActionLink("Back to List", "Index")

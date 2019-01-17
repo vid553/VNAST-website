@@ -44,7 +44,6 @@ namespace VNASTWebsite.Controllers
             }
         }
 
-        // PUT: Assignment
         public ActionResult EditAssignment(string id)
         {
             string get_assignments = AccountController.apiRequestController.RequestGet("tasks");
@@ -53,6 +52,7 @@ namespace VNASTWebsite.Controllers
             return View(assignmentToEdit);
         }
 
+        // PUT: Assignment
         [HttpPost]
         public ActionResult EditAssignment(Models.Assignment assignment)
         {
